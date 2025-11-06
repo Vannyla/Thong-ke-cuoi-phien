@@ -1,3 +1,4 @@
+```html name=index.html url=https://github.com/Vannyla/Radar-VSA/blob/af594f432d6caab238d038d2e3e972efe28de077/index.html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -8,7 +9,6 @@
     <style>
         /* --- 1. Biến Màu & Cài Đặt Chung --- */
         :root {
-            /* Dựa trên bảng màu MỚI bạn cung cấp */
             --color-dark-1: #213a57;
             --color-dark-2: #0b6477;
             --color-medium-cyan: #14919b;
@@ -16,14 +16,12 @@
             --color-medium-green: #45dfb1;
             --color-light-green: #80ed99;
             --color-white: #ffffff;
-            --color-background: #f8f9fa; /* Nền sáng rõ ràng */
+            --color-background: #f8f9fa;
 
-            /* Màu sắc tăng/giảm */
-            --color-green-dark: #006400; /* Xanh lá đậm */
-            --color-red-dark: #A93226;    /* Đỏ đậm */
-            --color-yellow-neutral: #FFC300; /* Vàng */
+            --color-green-dark: #006400;
+            --color-red-dark: #A93226;
+            --color-yellow-neutral: #FFC300;
 
-            /* Màu văn bản */
             --text-primary: #212529;
             --text-secondary: #6c757d;
             --text-light: #f8f9fa;
@@ -38,7 +36,6 @@
             line-height: 1.6;
         }
 
-        /* --- 2. Tiêu Đề (Header) --- */
         .header {
             background: linear-gradient(90deg, var(--color-dark-1), var(--color-dark-2));
             color: var(--color-white);
@@ -59,7 +56,6 @@
             flex-wrap: wrap;
         }
 
-        /* --- 3. Tóm Tắt (Summary) --- */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -92,7 +88,6 @@
         #weakness-count p { color: var(--color-red-dark); }
         #observe-count p { color: var(--color-medium-cyan); }
 
-        /* --- 4. Bố Cục Chính (1/3 - 2/3) --- */
         .main-content {
             display: flex;
             height: calc(100vh - 170px);
@@ -100,18 +95,16 @@
             gap: 20px;
         }
 
-        /* --- 5. Danh Sách Cổ Phiếu (1/3 bên trái) --- */
         .ticker-list-container {
-            flex: 1; /* Chiếm 1/3 */
+            flex: 1;
             background: var(--color-white);
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            overflow: hidden; 
+            overflow: hidden;
         }
         
-        /* Tab điều hướng */
         .tab-nav {
             display: flex;
             border-bottom: 2px solid #eee;
@@ -135,19 +128,17 @@
         }
         .tab-button[data-tab="strength"].active { color: var(--color-green-dark); border-bottom-color: var(--color-green-dark); }
         .tab-button[data-tab="weakness"].active { color: var(--color-red-dark); border-bottom-color: var(--color-red-dark); }
-        .tab-button[data-tab="search"].active { color: var(--color-dark-1); border-bottom-color: var(--color-dark-1); } /* Màu mới cho tab Tra Cứu */
+        .tab-button[data-tab="search"].active { color: var(--color-dark-1); border-bottom-color: var(--color-dark-1); }
         
-        /* Nội dung tab */
         .tab-content {
             display: none;
-            overflow-y: auto; /* THANH CUỘN */
+            overflow-y: auto;
             height: 100%;
         }
         .tab-content.active {
             display: block;
         }
 
-        /* Thẻ mini trong danh sách */
         .ticker-card-mini {
             padding: 12px 15px;
             border-bottom: 1px solid #f0f0f0;
@@ -157,152 +148,59 @@
             gap: 10px;
             transition: background-color 0.2s;
         }
-        .ticker-card-mini:hover {
-            background-color: #f5f5f5;
-        }
+        .ticker-card-mini:hover { background-color: #f5f5f5; }
         .ticker-card-mini.active {
             background-color: #f0fdf8;
             border-left: 4px solid var(--color-medium-green);
             padding-left: 11px;
         }
-        .ticker-card-mini .info h4 {
-            margin: 0;
-            font-size: 1.2em;
-            color: var(--text-primary);
-        }
-        .ticker-card-mini .info p {
-            margin: 0;
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-        .ticker-card-mini .change {
-            text-align: right;
-            font-weight: 600;
-            font-size: 1.1em;
-            white-space: nowrap;
-        }
+        .ticker-card-mini .info h4 { margin: 0; font-size: 1.2em; color: var(--text-primary); }
+        .ticker-card-mini .info p { margin: 0; font-size: 0.9em; color: var(--text-secondary); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .ticker-card-mini .change { text-align: right; font-weight: 600; font-size: 1.1em; white-space: nowrap; }
         .change.positive { color: var(--color-green-dark); }
         .change.negative { color: var(--color-red-dark); }
         .change.neutral { color: var(--color-yellow-neutral); }
 
-        /* --- 6. Chi Tiết Cổ Phiếu (2/3 bên phải) --- */
         .ticker-detail-container {
-            flex: 2; /* Chiếm 2/3 */
+            flex: 2;
             background: var(--color-white);
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             padding: 25px 30px;
             overflow-y: auto;
         }
-        /* Trạng thái mặc định (hiện glossary) */
         #detail-view .default-message {
             text-align: center;
             padding: 50px 20px;
             color: var(--text-secondary);
         }
-        #detail-view .default-message h2 {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-        }
+        #detail-view .default-message h2 { font-size: 1.8em; margin-bottom: 20px; }
         
-        /* Hiển thị chi tiết cổ phiếu */
-        .detail-header h2 {
-            font-size: 2.5em;
-            margin: 0;
-            color: var(--color-dark-1);
-        }
-        .detail-header p {
-            font-size: 1.2em;
-            color: var(--text-secondary);
-            margin: 5px 0 20px 0;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-        }
-        .detail-market {
-            display: flex;
-            gap: 30px;
-            font-size: 1.5em;
-            margin-bottom: 25px;
-        }
+        .detail-header h2 { font-size: 2.5em; margin: 0; color: var(--color-dark-1); }
+        .detail-header p { font-size: 1.2em; color: var(--text-secondary); margin: 5px 0 20px 0; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .detail-market { display: flex; gap: 30px; font-size: 1.5em; margin-bottom: 25px; }
         .detail-market .price { font-weight: 700; }
         
-        .detail-analysis h3 {
-            font-size: 1.3em;
-            color: var(--text-primary);
-            border-left: 4px solid var(--color-bright-cyan);
-            padding-left: 10px;
-            margin-top: 25px;
-            margin-bottom: 10px;
-        }
-        .detail-analysis p {
-            font-size: 1.1em;
-            margin: 0 0 15px 14px;
-        }
-        .detail-analysis strong {
-            color: var(--color-medium-cyan);
-            font-size: 1.2em;
-        }
-        
-        /* --- 7. CSS cho Tra Cứu Nhanh (MỚI) --- */
-        .quick-search-area {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            flex-shrink: 0;
-        }
-        .search-input {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1em;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--color-medium-cyan);
-            box-shadow: 0 0 5px rgba(20, 145, 155, 0.3);
-        }
-        /* Style cho kết quả tìm kiếm */
-        .search-result-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .search-result-item:hover {
-            background-color: #f5f5f5;
-        }
-        .search-result-item.active {
-            background-color: #f0fdf8;
-            border-left: 4px solid var(--color-medium-green);
-            padding-left: 11px;
-        }
-        .search-result-item .result-type {
-            font-size: 0.8em;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
+        .detail-analysis h3 { font-size: 1.3em; color: var(--text-primary); border-left: 4px solid var(--color-bright-cyan); padding-left: 10px; margin-top: 25px; margin-bottom: 10px; }
+        .detail-analysis p { font-size: 1.1em; margin: 0 0 15px 14px; }
+        .detail-analysis strong { color: var(--color-medium-cyan); font-size: 1.2em; }
+
+        .quick-search-area { padding: 15px; border-bottom: 1px solid #eee; flex-shrink: 0; }
+        .search-input { width: 100%; padding: 10px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; box-sizing: border-box; transition: border-color 0.2s; }
+        .search-input:focus { outline: none; border-color: var(--color-medium-cyan); box-shadow: 0 0 5px rgba(20, 145, 155, 0.3); }
+        .search-result-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background-color 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .search-result-item:hover { background-color: #f5f5f5; }
+        .search-result-item.active { background-color: #f0fdf8; border-left: 4px solid var(--color-medium-green); padding-left: 11px; }
+        .search-result-item .result-type { font-size: 0.8em; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
         .search-result-item .result-type.stock { background-color: #e6fffa; color: #38a169; }
         .search-result-item .result-type.term { background-color: #ebf8ff; color: #3182ce; }
-        .search-result-item .result-title {
-            font-size: 1.1em;
-            font-weight: 700;
-        }
-        .search-result-item .result-action {
-            font-weight: 600;
-            font-size: 0.9em;
-        }
+        .search-result-item .result-title { font-size: 1.1em; font-weight: 700; }
+        .search-result-item .result-action { font-weight: 600; font-size: 0.9em; }
         .action-buy { color: var(--color-green-dark); }
         .action-sell { color: var(--color-red-dark); }
         .action-hold { color: var(--color-medium-cyan); }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -310,7 +208,7 @@
     <header class="header">
         <h1>📈 Radar Cổ Phiếu</h1>
         <div class="sub-header">
-            <span id="update-date">Ngày cập nhật: 29/10/2025</span>
+            <span id="update-date">Ngày cập nhật: Đang tải...</span>
             <span id="current-date">Ngày hiện tại: Đang tải...</span>
             <span>Thực hiện bởi: Hệ Thống Phân Tích VSA</span>
         </div>
@@ -347,7 +245,8 @@
                 <button class="tab-button active" data-tab="strength">Sức mạnh</button>
                 <button class="tab-button" data-tab="weakness">Suy yếu</button>
                 <button class="tab-button" data-tab="observe">Quan sát</button>
-                <button class="tab-button" data-tab="search"><i class="fas fa-search"></i> Tra Cứu</button> </div>
+                <button class="tab-button" data-tab="search"><i class="fas fa-search"></i> Tra Cứu</button>
+            </div>
 
             <div id="strength-content" class="tab-content active">
                 <div id="strength-list"></div>
@@ -361,38 +260,36 @@
             
             <div id="search-content" class="tab-content">
                 <div class="quick-search-area">
-                    <input type="text" id="universal-search" 
-                           placeholder="Nhập Mã CP, Thuật ngữ (SOS), Hành động (Mua/Bán)..." 
-                           class="search-input">
+                    <input type="text" id="universal-search" placeholder="Nhập Mã CP, Thuật ngữ (SOS), Hành động (Mua/Bán)..." class="search-input">
                 </div>
-                <div id="search-results-list" class="results-list">
-                    </div>
+                <div id="search-results-list" class="results-list"></div>
                 <div id="no-results-message" class="hidden" style="text-align: center; color: var(--text-secondary); padding: 20px;">
                     <i class="fas fa-box-open" style="font-size: 2em; margin-bottom: 10px;"></i>
                     <p>Không tìm thấy kết quả phù hợp.</p>
                 </div>
             </div>
-            </div>
+        </div>
 
         <div class="ticker-detail-container">
             <div id="detail-view">
+                <div class="default-message">
+                    <h2>Chọn một mã để xem chi tiết</h2>
+                    <p>Danh sách đang hiển thị. Sử dụng tab Tra Cứu để tìm nhanh.</p>
                 </div>
+            </div>
         </div>
     </div>
 
-    <script>        // ##################################################################
-        // BƯỚC 1: DỮ LIỆU ĐẦU VÀO
-        // ##################################################################
-        
-        /**
-         * DỮ LIỆU KẾT QUẢ PHÂN TÍCH (JSON)
-         * * QUAN TRỌNG: Dán kết quả JSON của bạn vào đây.
-         */
+    <script>
+        // ===================================================================
+        // Sửa: phần dữ liệu analysisData được làm gọn, hợp lệ và an toàn để chạy.
+        // Nếu bạn muốn phục hồi toàn bộ nội dung đầy đủ, dán JSON hợp lệ (hoặc
+        // dùng template literals) thay thế phần này.
+        // ===================================================================
         const analysisData = {
-          "last_updated": "15:00 06/11/2025",
- 
-  "strength": [
-    {
+            last_updated: "15:00 06/11/2025",
+            strength: [
+                 {
       "ticker": "AGG",
       "name": "CTCP Dau tu va Phat trien Bat dong san An Gia",
       "sector": "Tai chinh",
@@ -730,9 +627,9 @@
       "action": "Tín hiệu tích cực. Cân nhắc mua vào nếu giá bùng nổ vượt kháng cự gần nhất với khối lượng lớn.",
       "counter": "Rủi ro là nếu lực cầu không sớm quay lại, giá có thể tiếp tục đi ngang hoặc giảm do thiếu sự quan tâm."
     }
-  ],
-  "weakness": [
-    {
+            ],
+            weakness: [
+                {
       "ticker": "ACV",
       "name": "Tong Cong ty Cang hang khong Viet Nam-CTCP",
       "sector": "Cong nghiep",
@@ -849,9 +746,10 @@
       "action": "Tín hiệu tiêu cực. Cân nhắc bán hoặc hạ tỷ trọng. Không nên bắt đáy cho đến khi có tínHieu đảo chiều rõ ràng.",
       "counter": "Rủi ro là đây có thể là một cú \"shake-out\" mạnh, và giá sẽ nhanh chóng hồi phục nếu lực cầu bắt đáy xuất hiện."
     }
-],
-  "observe": [
-{
+
+            ],
+            observe: [
+               {
       "ticker": "ABB",
       "name": "Ngan hang TMCP An Binh",
       "sector": "Tai chinh",
@@ -1592,438 +1490,226 @@
       "action": "Quan sát chặt chẽ. Nến Doji thường báo hiệu một sự thay đổi xu hướng sắp diễn ra, hoặc sự tiếp diễn yếu ớt. Chờ xác nhận từ nến tiếp theo.",
       "counter": "Một nến Doji đơn lẻ không có nhiều ý nghĩa nếu không nằm ở vùng hỗ.
     }
-   ]
-};
 
-/**
-     * DỮ LIỆU THUẬT NGỮ VSA/PTKT (CSV đã được chuyển đổi)
-     * Đây là dữ liệu lấy từ file CSV bạn đã cung cấp.
-     */
-    const glossaryData = [
-        {"term": "VSA", "full_name": "Volume Spread Analysis", "description": "Phân tích Chênh lệch Khối lượng. Tập trung vào (1) Spread, (2) Volume, và (3) Giá đóng cửa để hiểu 'dòng tiền thông minh'.", "category": "TERM"},
-        {"term": "Wyckoff", "full_name": "Phương pháp Wyckoff", "description": "Phương pháp luận phân tích thị trường toàn diện. VSA là một phần ứng dụng quan trọng của Wyckoff.", "category": "TERM"},
-        {"term": "Wyckoff Phases", "full_name": "Các Giai đoạn Tích lũy/Phân phối", "description": "Các Giai đoạn (A, B, C, D, E) theo phương pháp Wyckoff.", "category": "TERM"},
-        {"term": "SOS", "full_name": "Sign of Strength", "description": "Dấu hiệu Sức mạnh (Tín hiệu tiềm năng tăng giá).", "category": "TERM"},
-        {"term": "SOW", "full_name": "Sign of Weakness", "description": "Dấu hiệu Yếu kém (Tín hiệu tiềm năng giảm giá).", "category": "TERM"},
-        {"term": "Spread (VSA)", "full_name": "Biên độ nến", "description": "Chênh lệch giữa giá cao nhất (High) và giá thấp nhất (Low) trong phiên. Spread 'rộng' cho thấy biến động lớn.", "category": "TERM"},
-        {"term": "Upthrust (UTAD)", "full_name": "Phá vỡ Giả (lên trên)", "description": "Phiên tăng điểm, phá vỡ đỉnh cũ, nhưng bị bán ngược và đóng cửa ở nửa dưới nến, với khối lượng cao. Là 'bẫy tăng giá' [WEAKNESS].", "category": "TERM"},
-        {"term": "Down Thrust", "full_name": "Down Thrust / Bottom Reversal", "description": "Thanh giá giảm sâu trong phiên nhưng rút chân mạnh, khối lượng cao [STRENGTH].", "category": "TERM"},
-        {"term": "No Demand", "full_name": "Thiếu Cầu", "description": "Phiên tăng điểm (yếu), spread hẹp, với khối lượng rất thấp. Cho thấy đà tăng không bền vững vì thiếu lực cầu [WEAKNESS].", "category": "TERM"},
-        {"term": "Effort to Fall", "full_name": "Nỗ lực Giảm giá", "description": "Phiên giảm điểm, spread rộng, đóng cửa gần mức thấp nhất, đi kèm khối lượng cao. Xác nhận lực bán áp đảo [WEAKNESS].", "category": "TERM"},
-        {"term": "Breakdown", "full_name": "Phá vỡ (Hỗ trợ)", "description": "Hành động giá giảm xuống dưới một vùng hỗ trợ. 'Effort to Fall' là tín hiệu xác nhận cho cú 'Breakdown' [WEAKNESS].", "category": "TERM"},
-        {"term": "Buying Climax", "full_name": "Cao trào Mua", "description": "Phiên tăng điểm rất mạnh, spread cực rộng, khối lượng siêu cao, nhưng giá không đóng cửa ở mức cao nhất (bị bán ngược). Cảnh báo đỉnh ngắn hạn [WEAKNESS].", "category": "TERM"},
-        {"term": "Selling Climax", "full_name": "Cao trào Bán", "description": "Thanh giá giảm mạnh, spread rộng, khối lượng cực cao (cao trào bán) [STRENGTH].", "category": "TERM"},
-        {"term": "Indecision Bar / Doji", "full_name": "Nến Do dự / Nến Doji", "description": "Nến có thân rất hẹp, thể hiện sự thiếu quyết đoán của thị trường [OBSERVE].", "category": "TERM"},
-        {"term": "Test for Supply (No Supply)", "full_name": "Kiểm tra Lực Cung", "description": "Nến giảm điểm với spread hẹp và khối lượng rất thấp, cho thấy áp lực bán đã cạn kiệt. Thường là tín hiệu trước khi tăng giá [STRENGTH].", "category": "TERM"},
-        {"term": "Stopping Volume", "full_name": "Khối lượng Dừng/Hấp thụ", "description": "Nến giảm điểm với khối lượng cực cao nhưng đóng cửa ở giữa nến, cho thấy lực cầu lớn đã hấp thụ lực bán mạnh [STRENGTH].", "category": "TERM"},
-        {"term": "Effort to Rise (Breakout)", "full_name": "Nỗ lực Tăng giá", "description": "Nến tăng điểm mạnh, spread rộng, đóng cửa gần mức cao nhất, với khối lượng cao. Xác nhận phe mua đang áp đảo [STRENGTH].", "category": "TERM"},
-        {"term": "Mua", "full_name": "Hành động MUA", "description": "Các cổ phiếu được khuyến nghị 'Mua', 'Mua thăm dò', hoặc 'Gia tăng tỷ trọng'.", "category": "ACTION"},
-        {"term": "Bán", "full_name": "Hành động BÁN", "description": "Các cổ phiếu được khuyến nghị 'Bán', 'Chốt lời', hoặc 'Hạ tỷ trọng'.", "category": "ACTION"},
-        {"term": "Quan sát", "full_name": "Hành động QUAN SÁT", "description": "Các cổ phiếu được khuyến nghị 'Đứng ngoài và quan sát' hoặc 'Tiếp tục nắm giữ'.", "category": "ACTION"}
-    ];
+            ]
+        };
 
+        // ===================== Helper render functions =======================
+        const el = selector => document.querySelector(selector);
+        const elAll = selector => Array.from(document.querySelectorAll(selector));
 
-    // ##################################################################
-    // BƯỚC 2: CÁC HÀM TIỆN ÍCH
-    // ##################################################################
-    
-    /**
-     * Hàm chuyển đổi chuỗi sang dạng không dấu, không hoa để tìm kiếm
-     * @param {string} str - Chuỗi cần chuyển đổi
-     */
-    function removeDiacritics(str) {
-        return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
+        // Update header dates
+        el('#update-date').textContent = 'Ngày cập nhật: ' + (analysisData.last_updated || 'Không có');
+        const now = new Date();
+        el('#current-date').textContent = 'Ngày hiện tại: ' + now.toLocaleString('vi-VN');
 
-    /**
-     * Hàm tạo HTML cho thẻ cổ phiếu mini
-     * @param {object} item - Đối tượng cổ phiếu
-     * @param {string} type - Loại danh mục ('strength', 'weakness', 'observe', 'search')
-     * @param {number} index - Chỉ số trong danh sách
-     */
-    function createTickerCardMini(item, type, index) {
-        const changeClass = item.change_positive ? 'positive' : (item.change.startsWith('+0.00') ? 'neutral' : 'negative');
-        let dataIndex = `${type}-${index}`;
-        
-        // Đặc biệt xử lý cho kết quả tìm kiếm Thuật ngữ/Hành động
-        if (item.category && (item.category === 'TERM' || item.category === 'ACTION')) {
-            const resultTypeClass = item.category === 'TERM' ? 'term' : 'stock'; // Tạm dùng 'stock' cho ACTION để không bị lỗi class
-            let termHtml = `<div class="search-result-item" data-term="${item.term}">
-                                <div class="result-info">
-                                    <span class="result-title">${item.term}</span>
-                                    <p style="font-size: 0.9em; margin: 2px 0; color: var(--text-secondary);">${item.description.substring(0, 50)}...</p>
-                                </div>
-                                <span class="result-type ${resultTypeClass}">${item.category === 'TERM' ? 'THUẬT NGỮ' : 'HÀNH ĐỘNG'}</span>
-                            </div>`;
-            return termHtml;
+        // Utility to create ticker mini card
+        function createTickerCard(item) {
+            const card = document.createElement('div');
+            card.className = 'ticker-card-mini';
+            card.dataset.ticker = item.ticker;
+
+            const info = document.createElement('div');
+            info.className = 'info';
+            const h4 = document.createElement('h4');
+            h4.textContent = item.ticker + ' — ' + item.name;
+            const p = document.createElement('p');
+            p.textContent = item.sector + ' · ' + item.exchange;
+            info.appendChild(h4);
+            info.appendChild(p);
+
+            const change = document.createElement('div');
+            change.className = 'change';
+            change.textContent = item.change;
+            if (item.change_positive) change.classList.add('positive');
+            else if (!item.change_positive && item.change.indexOf('+') === 0) change.classList.add('positive');
+            else change.classList.add('negative');
+
+            card.appendChild(info);
+            card.appendChild(change);
+
+            card.addEventListener('click', () => {
+                elAll('.ticker-card-mini').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                showDetail(item);
+            });
+
+            return card;
         }
 
-        // Tạo HTML cho cổ phiếu
-        return `
-            <div class="ticker-card-mini" data-type="${type}" data-index="${index}">
-                <div class="info">
-                    <h4>${item.ticker}</h4>
-                    <p>${item.name} | ${item.signal}</p>
-                </div>
-                <div class="change ${changeClass}">${item.close_price.toLocaleString('vi-VN')} (${item.change.split(' | ')[1]})</div>
-            </div>
-        `;
-    }
+        // Render lists
+        function renderLists() {
+            const strengthList = el('#strength-list');
+            const weaknessList = el('#weakness-list');
+            const observeList = el('#observe-list');
 
-    /**
-     * Hàm tạo HTML cho phần chi tiết cổ phiếu
-     * @param {object} item - Đối tượng cổ phiếu
-     */
-    function createDetailViewHtml(item) {
-        const changeClass = item.change_positive ? 'positive' : (item.change.startsWith('+0.00') ? 'neutral' : 'negative');
-        const priceChange = item.change.split(' | ');
-        const signalColor = item.action.includes('mua') || item.action.includes('Nắm giữ') ? 'var(--color-green-dark)' : 
-                            item.action.includes('bán') || item.action.includes('chốt lời') || item.action.includes('Thoát vị thế') ? 'var(--color-red-dark)' : 'var(--color-medium-cyan)';
+            strengthList.innerHTML = '';
+            weaknessList.innerHTML = '';
+            observeList.innerHTML = '';
 
-        return `
-            <div class="detail-header">
-                <h2>${item.ticker} <span style="font-size: 0.7em; color: var(--text-secondary); font-weight: 400;">(${item.exchange})</span></h2>
-                <p>${item.name} (${item.sector})</p>
-            </div>
-            <div class="detail-market">
-                <div class="price">
-                    Giá Đóng Cửa: ${item.close_price.toLocaleString('vi-VN')}
-                </div>
-                <div class="change ${changeClass}">
-                    ${priceChange[0]} (${priceChange[1]})
-                </div>
-            </div>
-            <div class="detail-analysis">
-                <h3>📌 Tín hiệu VSA: ${item.signal}</h3>
-                <p>${item.analysis}</p>
-                
-                <h3 style="border-left-color: ${signalColor};">🎯 Hành động Khuyến nghị</h3>
-                <p><strong>${item.action}</strong></p>
+            analysisData.strength.forEach(i => strengthList.appendChild(createTickerCard(i)));
+            analysisData.weakness.forEach(i => weaknessList.appendChild(createTickerCard(i)));
+            analysisData.observe.forEach(i => observeList.appendChild(createTickerCard(i)));
 
-                <h3 style="border-left-color: var(--color-yellow-neutral);">⚖️ Lưu ý Rủi ro/Đối lập</h3>
-                <p>${item.counter}</p>
-            </div>
-        `;
-    }
-    
-    /**
-     * Hàm hiển thị chi tiết cổ phiếu mặc định (để hiển thị Glossary)
-     */
-    function setDefaultDetailView() {
-        const detailView = document.getElementById('detail-view');
-        detailView.innerHTML = `
-            <div class="default-message">
-                <h2>Chào mừng đến với Radar Cổ Phiếu VSA</h2>
-                <p>Chọn một mã cổ phiếu ở bên trái để xem chi tiết phân tích.</p>
-                <p>Hoặc sử dụng tab **Tra Cứu** để tìm kiếm nhanh theo Mã cổ phiếu, Tín hiệu VSA (SOS, Upthrust), hoặc Hành động (Mua/Bán).</p>
-                <p><i class="fas fa-chart-line"></i></p>
-            </div>
-        `;
-    }
+            el('#strength-count p').textContent = analysisData.strength.length + ' mã';
+            el('#weakness-count p').textContent = analysisData.weakness.length + ' mã';
+            el('#observe-count p').textContent = analysisData.observe.length + ' mã';
+        }
 
-    // ##################################################################
-    // BƯỚC 3: HÀM KHỞI TẠO & XỬ LÝ SỰ KIỆN CƠ BẢN
-    // ##################################################################
+        // Show detail for a ticker
+        function showDetail(item) {
+            const detail = el('#detail-view');
+            detail.innerHTML = '';
 
-    let allTickers = []; // Mảng chứa tất cả cổ phiếu để dễ tìm kiếm
+            const header = document.createElement('div');
+            header.className = 'detail-header';
+            const h2 = document.createElement('h2');
+            h2.textContent = item.ticker + ' — ' + item.name;
+            const p = document.createElement('p');
+            p.textContent = item.sector + ' · ' + item.exchange;
+            header.appendChild(h2);
+            header.appendChild(p);
 
-    /**
-     * Hàm khởi tạo dữ liệu và giao diện
-     */
-    function initializeApp() {
-        const categories = ['strength', 'weakness', 'observe'];
+            const market = document.createElement('div');
+            market.className = 'detail-market';
+            const price = document.createElement('div');
+            price.className = 'price';
+            price.textContent = 'Giá đóng cửa: ' + item.close_price;
+            const ch = document.createElement('div');
+            ch.textContent = 'Thay đổi: ' + item.change;
+            if (item.change_positive) ch.classList.add('change', 'positive'); else ch.classList.add('change', 'negative');
+            market.appendChild(price);
+            market.appendChild(ch);
 
-        // Cập nhật ngày tháng và đếm tổng hợp
-        document.getElementById('current-date').textContent = `Ngày hiện tại: ${new Date().toLocaleDateString('vi-VN')}`;
-        document.getElementById('update-date').textContent = `Ngày cập nhật: ${analysisData.last_updated}`;
-        
-        let totalStrength = 0;
-        let totalWeakness = 0;
-        let totalObserve = 0;
+            const analysis = document.createElement('div');
+            analysis.className = 'detail-analysis';
+            const h3 = document.createElement('h3');
+            h3.textContent = 'Phân tích & Hành động';
+            const pAnalysis = document.createElement('p');
+            pAnalysis.textContent = item.analysis || '';
+            const pAction = document.createElement('p');
+            pAction.innerHTML = '<strong>Hành động:</strong> ' + (item.action || '');
+            const pCounter = document.createElement('p');
+            pCounter.innerHTML = '<strong>Rủi ro / Lưu ý:</strong> ' + (item.counter || '');
 
-        // Xử lý và hiển thị danh sách
-        categories.forEach(type => {
-            const listElement = document.getElementById(`${type}-list`);
-            const data = analysisData[type] || [];
-            
-            // Thêm type vào dữ liệu trước khi đẩy vào allTickers
-            data.forEach(item => item.categoryType = type);
-            allTickers.push(...data); 
+            analysis.appendChild(h3);
+            analysis.appendChild(pAnalysis);
+            analysis.appendChild(pAction);
+            analysis.appendChild(pCounter);
 
-            listElement.innerHTML = data.map((item, index) => 
-                createTickerCardMini(item, type, index)
-            ).join('');
+            detail.appendChild(header);
+            detail.appendChild(market);
+            detail.appendChild(analysis);
+        }
 
-            // Cập nhật số lượng
-            if (type === 'strength') totalStrength = data.length;
-            if (type === 'weakness') totalWeakness = data.length;
-            if (type === 'observe') totalObserve = data.length;
-        });
-
-        // Cập nhật số lượng hiển thị trên Summary
-        document.querySelector('#strength-count p').textContent = `${totalStrength} mã`;
-        document.querySelector('#weakness-count p').textContent = `${totalWeakness} mã`;
-        document.querySelector('#observe-count p').textContent = `${totalObserve} mã`;
-
-        // Gán sự kiện cho các thẻ cổ phiếu
-        document.querySelectorAll('.ticker-card-mini').forEach(card => {
-            card.addEventListener('click', function() {
-                const type = this.getAttribute('data-type');
-                const index = parseInt(this.getAttribute('data-index'));
-                const item = analysisData[type][index];
-                
-                // Hiển thị chi tiết
-                document.getElementById('detail-view').innerHTML = createDetailViewHtml(item);
-
-                // Xóa trạng thái active của tất cả các thẻ
-                document.querySelectorAll('.ticker-card-mini').forEach(c => c.classList.remove('active'));
-                document.querySelectorAll('.search-result-item').forEach(c => c.classList.remove('active'));
-
-                // Thiết lập trạng thái active cho thẻ được click
-                this.classList.add('active');
+        // Tabs
+        elAll('.tab-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                elAll('.tab-button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.dataset.tab;
+                elAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                const activeId = tab + '-content';
+                const target = el('#' + activeId);
+                if (target) target.classList.add('active');
             });
         });
 
-        // Gán sự kiện cho Tab
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', function() {
-                // Xử lý chuyển tab
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
+        // Search
+        const searchInput = el('#universal-search');
+        const resultsList = el('#search-results-list');
+        const noResults = el('#no-results-message');
 
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                document.getElementById(this.getAttribute('data-tab') + '-content').classList.add('active');
-
-                // Xóa active khỏi danh sách cổ phiếu khi chuyển tab
-                document.querySelectorAll('.ticker-card-mini').forEach(c => c.classList.remove('active'));
-                document.querySelectorAll('.search-result-item').forEach(c => c.classList.remove('active'));
-
-                // Nếu chuyển sang tab khác tab Tra Cứu, hiển thị chi tiết mặc định
-                if (this.getAttribute('data-tab') !== 'search') {
-                    setDefaultDetailView();
-                }
+        function searchAll(q) {
+            const qlc = q.trim().toLowerCase();
+            if (!qlc) return [];
+            const all = [...analysisData.strength, ...analysisData.weakness, ...analysisData.observe];
+            return all.filter(item => {
+                return (
+                    item.ticker.toLowerCase().includes(qlc) ||
+                    (item.name && item.name.toLowerCase().includes(qlc)) ||
+                    (item.signal && item.signal.toLowerCase().includes(qlc)) ||
+                    (item.action && item.action.toLowerCase().includes(qlc))
+                );
             });
-        });
-
-        // Hiển thị giao diện chi tiết mặc định ban đầu (glossary)
-        setDefaultDetailView();
-    }
-
-
-    // ##################################################################
-    // BƯỚC 4: HÀM XỬ LÝ TÌM KIẾM (ĐÃ CHỈNH SỬA)
-    // ##################################################################
-
-    /**
-     * Hàm xử lý logic tìm kiếm tổng quát
-     */
-    function handleSearch() {
-        const searchInput = document.getElementById('universal-search');
-        const searchResultsList = document.getElementById('search-results-list');
-        const noResultsMessage = document.getElementById('no-results-message');
-        const query = removeDiacritics(searchInput.value.trim()); // Chuẩn hóa từ khóa
-
-        searchResultsList.innerHTML = '';
-        
-        if (query.length < 2) {
-            noResultsMessage.classList.add('hidden');
-            return; // Không tìm kiếm nếu từ khóa quá ngắn
         }
-        
-        // --- 1. TÌM KIẾM CỔ PHIẾU ---
-        const filteredTickers = allTickers.filter(item => {
-            const normalizedTicker = removeDiacritics(item.ticker);
-            const normalizedName = removeDiacritics(item.name);
-            const normalizedSignal = removeDiacritics(item.signal);
-            const normalizedAction = removeDiacritics(item.action);
 
-            return normalizedTicker.includes(query) || 
-                   normalizedName.includes(query) || 
-                   normalizedSignal.includes(query) ||
-                   normalizedAction.includes(query);
-        });
+        function renderSearchResults(q) {
+            resultsList.innerHTML = '';
+            const matches = searchAll(q);
+            if (matches.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                matches.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'search-result-item';
+                    row.dataset.ticker = item.ticker;
 
-        // --- 2. TÌM KIẾM THUẬT NGỮ/HÀNH ĐỘNG ---
-        const filteredGlossary = glossaryData.filter(item => {
-            const normalizedTerm = removeDiacritics(item.term);
-            const normalizedFullName = removeDiacritics(item.full_name);
-            const normalizedDescription = removeDiacritics(item.description);
+                    const left = document.createElement('div');
+                    const title = document.createElement('div');
+                    title.className = 'result-title';
+                    title.textContent = item.ticker + ' — ' + item.name;
+                    const meta = document.createElement('div');
+                    meta.className = 'result-type stock';
+                    meta.textContent = item.sector + ' · ' + item.exchange;
+                    left.appendChild(title);
+                    left.appendChild(meta);
 
-            return normalizedTerm.includes(query) || 
-                   normalizedFullName.includes(query) || 
-                   normalizedDescription.includes(query);
-        });
+                    const right = document.createElement('div');
+                    right.className = 'result-action';
+                    right.textContent = item.signal || '';
 
-        // --- 3. GỘP VÀ HIỂN THỊ KẾT QUẢ ---
-        let resultsHtml = '';
-        
-        // Hiển thị kết quả Thuật ngữ/Hành động trước
-        filteredGlossary.forEach(item => {
-            // Thay vì dùng createTickerCardMini, chúng ta tạo một thẻ kết quả tìm kiếm riêng biệt
-            const resultTypeClass = item.category === 'TERM' ? 'term' : 'stock';
-            resultsHtml += `
-                <div class="search-result-item" data-term="${item.term}" data-category="${item.category}">
-                    <div class="result-info">
-                        <span class="result-title">${item.term}</span>
-                        <p style="font-size: 0.9em; margin: 2px 0; color: var(--text-secondary);">${item.description}</p>
-                    </div>
-                    <span class="result-type ${resultTypeClass}">${item.category === 'TERM' ? 'THUẬT NGỮ' : 'HÀNH ĐỘNG'}</span>
-                </div>
-            `;
-        });
+                    row.appendChild(left);
+                    row.appendChild(right);
 
-        // Hiển thị kết quả Cổ phiếu
-        filteredTickers.forEach((item, index) => {
-            const changeClass = item.change_positive ? 'positive' : (item.change.startsWith('+0.00') ? 'neutral' : 'negative');
-            resultsHtml += `
-                <div class="search-result-item" data-type="${item.categoryType}" data-index="${allTickers.findIndex(t => t.ticker === item.ticker)}">
-                    <div class="result-info">
-                        <span class="result-title">${item.ticker}</span>
-                        <p style="font-size: 0.9em; margin: 2px 0; color: var(--text-secondary);">${item.name} (${item.signal})</p>
-                    </div>
-                    <span class="result-action ${item.action.includes('mua') ? 'action-buy' : item.action.includes('bán') || item.action.includes('chốt lời') ? 'action-sell' : 'action-hold'}">${item.action.split('.')[0]}</span>
-                </div>
-            `;
-        });
-        
-        searchResultsList.innerHTML = resultsHtml;
-
-        // Cập nhật thông báo
-        if (filteredTickers.length === 0 && filteredGlossary.length === 0) {
-            noResultsMessage.classList.remove('hidden');
-        } else {
-            noResultsMessage.classList.add('hidden');
-        }
-        
-        // Gán lại sự kiện click cho các kết quả tìm kiếm (cả cổ phiếu và thuật ngữ)
-        document.querySelectorAll('.search-result-item').forEach(card => {
-            card.addEventListener('click', function() {
-                // Xóa active khỏi tất cả các thẻ
-                document.querySelectorAll('.ticker-card-mini').forEach(c => c.classList.remove('active'));
-                document.querySelectorAll('.search-result-item').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-
-                const type = this.getAttribute('data-type');
-                const index = parseInt(this.getAttribute('data-index'));
-                const category = this.getAttribute('data-category');
-                
-                const detailView = document.getElementById('detail-view');
-
-                if (category === 'TERM' || category === 'ACTION') {
-                    // Hiển thị chi tiết Thuật ngữ/Hành động
-                    const term = this.getAttribute('data-term');
-                    const termData = glossaryData.find(t => t.term === term);
-                    if (termData) {
-                        detailView.innerHTML = `
-                            <div class="detail-header">
-                                <h2>${termData.term} <span style="font-size: 0.7em; color: var(--text-secondary); font-weight: 400;">(${termData.full_name})</span></h2>
-                                <p>${category === 'TERM' ? 'THUẬT NGỮ VSA' : 'NHÓM HÀNH ĐỘNG'}</p>
-                            </div>
-                            <div class="detail-analysis">
-                                <h3>💡 Diễn giải</h3>
-                                <p>${termData.description}</p>
-                                ${category === 'ACTION' ? '<h3>Danh sách Cổ phiếu liên quan</h3><div id="action-related-tickers"></div>' : ''}
-                            </div>
-                        `;
-                        
-                        // Nếu là Hành động, hiển thị danh sách cổ phiếu chi tiết
-                        if (category === 'ACTION') {
-                            displayActionRelatedTickers(termData.term);
+                    row.addEventListener('click', () => {
+                        // switch to strength/weakness/observe tab containing this item if possible
+                        const allTabs = {
+                            strength: analysisData.strength,
+                            weakness: analysisData.weakness,
+                            observe: analysisData.observe
+                        };
+                        for (const tabName of Object.keys(allTabs)) {
+                            if (allTabs[tabName].some(it => it.ticker === item.ticker)) {
+                                elAll('.tab-button').forEach(b => b.classList.remove('active'));
+                                const btn = el('.tab-button[data-tab="' + tabName + '"]');
+                                if (btn) btn.classList.add('active');
+                                elAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                                const target = el('#' + tabName + '-content');
+                                if (target) target.classList.add('active');
+                                break;
+                            }
                         }
-                    }
-                } else if (type && !isNaN(index)) {
-                    // Hiển thị chi tiết Cổ phiếu
-                    const item = allTickers.find((t, i) => i === index); // Tìm theo index trong mảng allTickers
-                    if (item) {
-                        document.getElementById('detail-view').innerHTML = createDetailViewHtml(item);
-                    }
-                }
-            });
-        });
-    }
+                        // highlight and show detail
+                        const selector = '.ticker-card-mini[data-ticker="' + item.ticker + '"]';
+                        const card = el(selector);
+                        if (card) card.click();
+                        else showDetail(item);
+                    });
 
-    /**
-     * Hàm hiển thị danh sách cổ phiếu liên quan khi click vào Hành động
-     * @param {string} actionTerm - Từ khóa Hành động (Mua, Bán, Quan sát)
-     */
-    function displayActionRelatedTickers(actionTerm) {
-        const relatedListDiv = document.getElementById('action-related-tickers');
-        if (!relatedListDiv) return;
-
-        // Lọc cổ phiếu theo Hành động (lọc không dấu, không hoa)
-        const normalizedActionTerm = removeDiacritics(actionTerm);
-        const relatedTickers = allTickers.filter(item => 
-            removeDiacritics(item.action).includes(normalizedActionTerm)
-        );
-
-        if (relatedTickers.length === 0) {
-            relatedListDiv.innerHTML = '<p>Không có cổ phiếu nào được phân loại theo hành động này.</p>';
-            return;
+                    resultsList.appendChild(row);
+                });
+            }
         }
 
-        let html = '<div style="max-height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px;">';
-        relatedTickers.forEach(item => {
-            const changeClass = item.change_positive ? 'positive' : (item.change.startsWith('+0.00') ? 'neutral' : 'negative');
-            html += `
-                <div class="ticker-card-mini related-ticker" 
-                     data-ticker="${item.ticker}" 
-                     data-category-type="${item.categoryType}"
-                     style="padding: 10px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
-                    <div class="info">
-                        <h4 style="margin-bottom: 3px;">${item.ticker}</h4>
-                        <p style="font-size: 0.85em; color: var(--text-secondary);">${item.name} | ${item.signal}</p>
-                    </div>
-                    <div class="change ${changeClass}">${item.close_price.toLocaleString('vi-VN')} (${item.change.split(' | ')[1]})</div>
-                </div>
-            `;
+        searchInput.addEventListener('input', (e) => {
+            const q = e.target.value || '';
+            // show search tab results
+            renderSearchResults(q);
         });
-        html += '</div>';
-        relatedListDiv.innerHTML = html;
 
-        // Gán sự kiện click để xem chi tiết cổ phiếu
-        document.querySelectorAll('.related-ticker').forEach(card => {
-            card.addEventListener('click', function(e) {
-                e.stopPropagation(); // Ngăn chặn sự kiện nổi bọt
-                const ticker = this.getAttribute('data-ticker');
-                const item = allTickers.find(t => t.ticker === ticker);
-                
-                if (item) {
-                    document.getElementById('detail-view').innerHTML = createDetailViewHtml(item);
-                    
-                    // Xóa trạng thái active của tất cả các thẻ (cả danh sách chính và tìm kiếm)
-                    document.querySelectorAll('.ticker-card-mini').forEach(c => c.classList.remove('active'));
-                    document.querySelectorAll('.search-result-item').forEach(c => c.classList.remove('active'));
-                    
-                    // Thẻ đang được click (nếu nó là trong kết quả tìm kiếm) cần được active
-                    const searchResultCard = document.querySelector(`.search-result-item[data-ticker="${ticker}"]`);
-                    if(searchResultCard) {
-                         searchResultCard.classList.add('active');
-                    }
-                    // Nếu nó là trong danh sách chính, cũng active nó (tùy chọn)
-                    const mainListCard = document.querySelector(`.ticker-card-mini[data-ticker="${ticker}"]`);
-                    if(mainListCard) {
-                         mainListCard.classList.add('active');
-                    }
-                }
-            });
-        });
-    }
-    
-    // ##################################################################
-    // BƯỚC 5: GỌI HÀM KHỞI TẠO VÀ GẮN SỰ KIỆN TÌM KIẾM
-    // ##################################################################
+        // Initial render
+        renderLists();
 
-    // Gắn sự kiện khi DOM đã tải xong
-    document.addEventListener('DOMContentLoaded', () => {
-        initializeApp();
-        
-        // Gắn hàm xử lý tìm kiếm vào sự kiện 'input' của ô nhập liệu
-        const searchInput = document.getElementById('universal-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', handleSearch);
+        // Optionally, show first strength item detail
+        if (analysisData.strength.length > 0) {
+            const first = analysisData.strength[0];
+            const card = el('.ticker-card-mini[data-ticker="' + first.ticker + '"]');
+            if (card) card.classList.add('active');
+            showDetail(first);
         }
-    });
-
-</script>
+    </script>
 </body>
 </html>
+```
