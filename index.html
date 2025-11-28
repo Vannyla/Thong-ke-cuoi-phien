@@ -1,2774 +1,477 @@
-```html name=index.html url=https://github.com/Vannyla/Radar-VSA/blob/af594f432d6caab238d038d2e3e972efe28de077/index.html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radar Cổ Phiếu</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Dashboard Thị Trường 28/11/2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
-        /* --- 1. Biến Màu & Cài Đặt Chung --- */
+        /* --- VARIABLES (LIGHT MODE DEFAULT) --- */
         :root {
-            --color-dark-1: #213a57;
-            --color-dark-2: #0b6477;
-            --color-medium-cyan: #14919b;
-            --color-bright-cyan: #0ad1c8;
-            --color-medium-green: #45dfb1;
-            --color-light-green: #80ed99;
-            --color-white: #ffffff;
-            --color-background: #f8f9fa;
+            --bg-body: #f0f2f5;       
+            --bg-card: #ffffff;       
+            --text-main: #2c3e50;     
+            --text-sub: #7f8c8d;      
+            --border-color: #e1e4e8;
+            --chart-grid: #f0f0f0;
+            --chart-text: #95a5a6;
+            
+            --success: #27ae60;       
+            --danger: #c0392b;        
+            --warning: #f39c12;       
+            --info: #2980b9;          
+            --purple: #8e44ad;        
+        }
 
-            --color-green-dark: #006400;
-            --color-red-dark: #A93226;
-            --color-yellow-neutral: #FFC300;
-
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --text-light: #f8f9fa;
+        /* --- DARK MODE OVERRIDES --- */
+        .dark-mode {
+            --bg-body: #1a1a2e;       /* Nền tối thẫm */
+            --bg-card: #16213e;       /* Card màu tối xanh */
+            --text-main: #e6e6e6;     /* Chữ trắng xám */
+            --text-sub: #a0a0a0;
+            --border-color: #2c3e50;
+            --chart-grid: #2c3e50;    /* Grid tối */
+            --chart-text: #b0b0b0;
+            
+            --success: #2ecc71;       /* Xanh lá sáng hơn */
+            --danger: #e74c3c;        /* Đỏ sáng hơn */
+            --warning: #f1c40f;       /* Vàng sáng */
+            --info: #3498db;          /* Xanh dương sáng */
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--color-background);
-            color: var(--text-primary);
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
+            padding: 20px;
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển màu mượt */
         }
 
-        .header {
-            background: linear-gradient(90deg, var(--color-dark-1), var(--color-dark-2));
-            color: var(--color-white);
-            padding: 15px 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
         }
-        .header h1 {
-            margin: 0;
-            font-size: 2em;
-            color: var(--color-bright-cyan);
-        }
-        .sub-header {
-            font-size: 0.9em;
-            color: var(--text-light);
-            opacity: 0.8;
+
+        /* --- HEADER & TOOLBAR --- */
+        header {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
             display: flex;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
+            border: 1px solid var(--border-color);
+        }
+        
+        .header-left h1 { margin: 0; font-size: 24px; color: var(--info); font-weight: 800; text-transform: uppercase;}
+        .header-left .date { color: var(--text-sub); font-size: 14px; margin-top: 5px; }
+
+        .header-tools {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px 30px;
+        .btn {
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-        .summary-card {
-            background: var(--color-white);
+
+        .btn-theme { background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-theme:hover { background: var(--border-color); }
+
+        .btn-download { background: var(--info); color: white; }
+        .btn-download:hover { opacity: 0.9; }
+
+        .market-score {
+            text-align: right;
+            margin-left: 20px;
+            padding-left: 20px;
+            border-left: 1px solid var(--border-color);
+        }
+        .score-big { font-size: 32px; font-weight: bold; color: var(--success); }
+        .score-change { font-size: 14px; font-weight: 500; }
+
+        /* --- GRID LAYOUT --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; text-align: center; gap: 15px; }
+            .market-score { border-left: none; margin-left: 0; padding-left: 0; }
+            .header-tools { justify-content: center; width: 100%; }
+        }
+
+        /* --- CARD STYLES --- */
+        .card {
+            background-color: var(--bg-card);
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
-        .summary-card-icon {
-            font-size: 2em;
-        }
-        .summary-card-content h3 {
-            margin: 0;
-            font-size: 1.1em;
-            color: var(--text-secondary);
-        }
-        .summary-card-content p {
-            margin: 0;
-            font-size: 1.5em;
+
+        .card-header {
+            font-size: 16px;
             font-weight: 700;
-        }
-        #strength-count p { color: var(--color-green-dark); }
-        #weakness-count p { color: var(--color-red-dark); }
-        #observe-count p { color: var(--color-medium-cyan); }
-
-        .main-content {
+            margin-bottom: 15px;
+            border-left: 4px solid var(--info);
+            padding-left: 12px;
+            color: var(--text-main);
+            text-transform: uppercase;
             display: flex;
-            height: calc(100vh - 170px);
-            padding: 0 30px 20px 30px;
-            gap: 20px;
+            justify-content: space-between;
         }
 
-        .ticker-list-container {
-            flex: 1;
-            background: var(--color-white);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        .tab-nav {
-            display: flex;
-            border-bottom: 2px solid #eee;
-            flex-shrink: 0; 
-        }
-        .tab-button {
-            flex-grow: 1;
-            padding: 12px 10px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 1em;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .tab-button.active {
-            color: var(--color-medium-cyan);
-            border-bottom-color: var(--color-medium-cyan);
-        }
-        .tab-button[data-tab="strength"].active { color: var(--color-green-dark); border-bottom-color: var(--color-green-dark); }
-        .tab-button[data-tab="weakness"].active { color: var(--color-red-dark); border-bottom-color: var(--color-red-dark); }
-        .tab-button[data-tab="search"].active { color: var(--color-dark-1); border-bottom-color: var(--color-dark-1); }
-        
-        .tab-content {
-            display: none;
-            overflow-y: auto;
-            height: 100%;
-        }
-        .tab-content.active {
-            display: block;
+        /* --- HELPERS --- */
+        .text-green { color: var(--success); font-weight: 600; }
+        .text-red { color: var(--danger); font-weight: 600; }
+        .text-orange { color: var(--warning); font-weight: 600; }
+        .text-purple { color: var(--purple); font-weight: 600; }
+        .label { font-size: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* --- CHART --- */
+        .chart-container {
+            position: relative;
+            height: 320px;
+            width: 100%;
         }
 
-        .ticker-card-mini {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
+        /* --- METRICS --- */
+        .metrics-row {
             display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 10px;
-            transition: background-color 0.2s;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
         }
-        .ticker-card-mini:hover { background-color: #f5f5f5; }
-        .ticker-card-mini.active {
-            background-color: #f0fdf8;
-            border-left: 4px solid var(--color-medium-green);
-            padding-left: 11px;
-        }
-        .ticker-card-mini .info h4 { margin: 0; font-size: 1.2em; color: var(--text-primary); }
-        .ticker-card-mini .info p { margin: 0; font-size: 0.9em; color: var(--text-secondary); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .ticker-card-mini .change { text-align: right; font-weight: 600; font-size: 1.1em; white-space: nowrap; }
-        .change.positive { color: var(--color-green-dark); }
-        .change.negative { color: var(--color-red-dark); }
-        .change.neutral { color: var(--color-yellow-neutral); }
-
-        .ticker-detail-container {
-            flex: 2;
-            background: var(--color-white);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            padding: 25px 30px;
-            overflow-y: auto;
-        }
-        #detail-view .default-message {
+        .metric-item {
+            background: rgba(127, 140, 141, 0.1); /* Màu nền mờ để hợp cả sáng/tối */
+            padding: 15px 10px;
+            border-radius: 6px;
             text-align: center;
-            padding: 50px 20px;
-            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
-        #detail-view .default-message h2 { font-size: 1.8em; margin-bottom: 20px; }
+        .metric-val { display: block; font-size: 20px; font-weight: bold; margin-bottom: 4px; }
         
-        .detail-header h2 { font-size: 2.5em; margin: 0; color: var(--color-dark-1); }
-        .detail-header p { font-size: 1.2em; color: var(--text-secondary); margin: 5px 0 20px 0; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .detail-market { display: flex; gap: 30px; font-size: 1.5em; margin-bottom: 25px; }
-        .detail-market .price { font-weight: 700; }
+        /* --- SECTORS --- */
+        .sector-group { margin-bottom: 20px; }
+        .sector-group-title { 
+            font-size: 14px; font-weight: bold; margin-bottom: 10px; 
+            padding-bottom: 5px; border-bottom: 2px solid var(--border-color); 
+            display: flex; align-items: center;
+        }
+        .sector-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            background: rgba(127, 140, 141, 0.05);
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 14px;
+        }
+        /* Hover item trong list */
+        .sector-item:hover { background-color: rgba(127, 140, 141, 0.1); }
         
-        .detail-analysis h3 { font-size: 1.3em; color: var(--text-primary); border-left: 4px solid var(--color-bright-cyan); padding-left: 10px; margin-top: 25px; margin-bottom: 10px; }
-        .detail-analysis p { font-size: 1.1em; margin: 0 0 15px 14px; }
-        .detail-analysis strong { color: var(--color-medium-cyan); font-size: 1.2em; }
+        /* --- SCENARIOS --- */
+        .scenario-box {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 14px;
+            border: 1px solid transparent;
+        }
+        /* Màu cứng cho Scenarios để đảm bảo dễ đọc ở mọi chế độ */
+        .sc-pos { background-color: #e8f5e9; border-color: #c8e6c9; color: #1e3a23; }
+        .sc-neg { background-color: #fce4ec; border-color: #f8bbd0; color: #4a1c24; }
+        
+        /* Dark mode overrides cho Scenario để đỡ chói */
+        .dark-mode .sc-pos { background-color: #1b5e20; border-color: #2ecc71; color: #fff; }
+        .dark-mode .sc-neg { background-color: #b71c1c; border-color: #e74c3c; color: #fff; }
 
-        .quick-search-area { padding: 15px; border-bottom: 1px solid #eee; flex-shrink: 0; }
-        .search-input { width: 100%; padding: 10px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; box-sizing: border-box; transition: border-color 0.2s; }
-        .search-input:focus { outline: none; border-color: var(--color-medium-cyan); box-shadow: 0 0 5px rgba(20, 145, 155, 0.3); }
-        .search-result-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background-color 0.2s; display: flex; justify-content: space-between; align-items: center; }
-        .search-result-item:hover { background-color: #f5f5f5; }
-        .search-result-item.active { background-color: #f0fdf8; border-left: 4px solid var(--color-medium-green); padding-left: 11px; }
-        .search-result-item .result-type { font-size: 0.8em; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
-        .search-result-item .result-type.stock { background-color: #e6fffa; color: #38a169; }
-        .search-result-item .result-type.term { background-color: #ebf8ff; color: #3182ce; }
-        .search-result-item .result-title { font-size: 1.1em; font-weight: 700; }
-        .search-result-item .result-action { font-weight: 600; font-size: 0.9em; }
-        .action-buy { color: var(--color-green-dark); }
-        .action-sell { color: var(--color-red-dark); }
-        .action-hold { color: var(--color-medium-cyan); }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #fff;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .bg-green { background-color: var(--success); }
+        .bg-red { background-color: var(--danger); }
+        
+        .rec-box {
+            background: rgba(41, 128, 185, 0.1); 
+            padding: 10px; 
+            border-radius: 5px; 
+            font-size: 13px; 
+            color: var(--info);
+            border: 1px dashed var(--info);
+        }
 
-        .hidden { display: none; }
     </style>
 </head>
-<body>
+<body id="dashboard-body">
 
-    <header class="header">
-        <h1>📈 Radar Cổ Phiếu</h1>
-        <div class="sub-header">
-            <span id="update-date">Ngày cập nhật: Đang tải...</span>
-            <span id="current-date">Ngày hiện tại: Đang tải...</span>
-            <span>Thực hiện bởi: Hệ Thống Phân Tích VSA</span>
+<div class="container" id="capture-area">
+    <header data-html2canvas-ignore="true"> <div class="header-left">
+            <h1>Báo Cáo Phân Tích Kỹ Thuật</h1>
+            <div class="date">Ngày giao dịch: Thứ Sáu, 28/11/2025</div>
+        </div>
+
+        <div class="header-tools">
+            <button class="btn btn-theme" onclick="toggleTheme()">
+                🌗 Giao diện
+            </button>
+            <button class="btn btn-download" onclick="captureDashboard()">
+                📷 Tải Ảnh
+            </button>
+            
+            <div class="market-score">
+                <div class="score-big">1,690.99</div>
+                <div class="score-change text-green">▲ Tăng điểm</div>
+            </div>
         </div>
     </header>
 
-    <div class="summary-grid">
-        <div class="summary-card" id="strength-count">
-            <span class="summary-card-icon">🚀</span>
-            <div class="summary-card-content">
-                <h3>Sức mạnh</h3>
-                <p>0 mã</p>
-            </div>
-        </div>
-        <div class="summary-card" id="weakness-count">
-            <span class="summary-card-icon">📉</span>
-            <div class="summary-card-content">
-                <h3>Suy yếu</h3>
-                <p>0 mã</p>
-            </div>
-        </div>
-        <div class="summary-card" id="observe-count">
-            <span class="summary-card-icon">👁️</span>
-            <div class="summary-card-content">
-                <h3>Quan sát</h3>
-                <p>0 mã</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="main-content">
+    <div class="dashboard-grid">
         
-        <div class="ticker-list-container">
-            <div class="tab-nav">
-                <button class="tab-button active" data-tab="strength">Sức mạnh</button>
-                <button class="tab-button" data-tab="weakness">Suy yếu</button>
-                <button class="tab-button" data-tab="observe">Quan sát</button>
-                <button class="tab-button" data-tab="search"><i class="fas fa-search"></i> Tra Cứu</button>
+        <div class="left-col">
+            <div class="card">
+                <div class="card-header">
+                    Diễn biến VNINDEX (30 Phiên)
+                    <span style="font-size: 12px; font-weight: normal; color: var(--text-sub); text-transform: none;">Trend: Tăng ngắn hạn</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="marketChart"></canvas>
+                </div>
             </div>
 
-            <div id="strength-content" class="tab-content active">
-                <div id="strength-list"></div>
-            </div>
-            <div id="weakness-content" class="tab-content">
-                <div id="weakness-list"></div>
-            </div>
-            <div id="observe-content" class="tab-content">
-                <div id="observe-list"></div>
-            </div>
-            
-            <div id="search-content" class="tab-content">
-                <div class="quick-search-area">
-                    <input type="text" id="universal-search" placeholder="Nhập Mã CP, Thuật ngữ (SOS), Hành động (Mua/Bán)..." class="search-input">
+            <div class="card">
+                <div class="card-header">Thông số Kỹ thuật</div>
+                <div class="metrics-row">
+                    <div class="metric-item">
+                        <span class="metric-val text-green">58.65</span>
+                        <span class="label">RSI (14)</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-val text-green">+7.34</span>
+                        <span class="label">MACD Hist</span>
+                    </div>
+                     <div class="metric-item">
+                        <span class="metric-val text-purple">1700</span>
+                        <span class="label">Cản tâm lý</span>
+                    </div>
                 </div>
-                <div id="search-results-list" class="results-list"></div>
-                <div id="no-results-message" class="hidden" style="text-align: center; color: var(--text-secondary); padding: 20px;">
-                    <i class="fas fa-box-open" style="font-size: 2em; margin-bottom: 10px;"></i>
-                    <p>Không tìm thấy kết quả phù hợp.</p>
+                <div style="font-size: 14px; margin-top: 10px;">
+                    <p><strong>🔹 Phân tích VSA:</strong> Giá tăng + Vol thấp = <span class="text-orange">"No Supply"</span>. Cần Vol bùng nổ để confirm.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Kịch bản Hành động (29/11)</div>
+                <div class="scenario-box sc-pos">
+                    <div style="font-weight: bold; margin-bottom: 5px;">📈 Kịch bản Tích cực (65%)</div>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><strong>Điều kiện:</strong> Vượt 1,700 + Vol > 700 triệu CP.</li>
+                        <li><strong>Hành động:</strong> Gia tăng tỷ trọng (Leader Groups).</li>
+                    </ul>
+                </div>
+                <div class="scenario-box sc-neg">
+                    <div style="font-weight: bold; margin-bottom: 5px;">📉 Kịch bản Tiêu cực (35%)</div>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><strong>Điều kiện:</strong> Thủng 1,680 với Vol lớn.</li>
+                        <li><strong>Hành động:</strong> Dừng mua. Chốt lời ngắn hạn.</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <div class="ticker-detail-container">
-            <div id="detail-view">
-                <div class="default-message">
-                    <h2>Chọn một mã để xem chi tiết</h2>
-                    <p>Danh sách đang hiển thị. Sử dụng tab Tra Cứu để tìm nhanh.</p>
+        <div class="right-col">
+            <div class="card">
+                <div class="card-header">Dòng tiền & Ngành</div>
+                
+                <div class="sector-group">
+                    <div class="sector-group-title" style="color: var(--success);">🏆 NHÓM DẪN DẮT</div>
+                    <div class="sector-item">
+                        <div><strong>Dịch vụ Tiêu dùng</strong> <span class="badge bg-green">+1.54%</span></div>
+                        <div class="text-green">Mạnh nhất</div>
+                    </div>
+                    <div class="sector-item">
+                        <div><strong>Tài chính</strong> <span class="badge bg-green">+0.58%</span></div>
+                        <div class="text-green">Ổn định</div>
+                    </div>
+                </div>
+
+                <div class="sector-group">
+                    <div class="sector-group-title" style="color: var(--danger);">⚠️ NHÓM SUY YẾU</div>
+                    <div class="sector-item">
+                        <div><strong>Công nghệ</strong> <span class="badge bg-red">-2.15%</span></div>
+                        <div class="text-red">Yếu</div>
+                    </div>
+                </div>
+
+                <div class="sector-group">
+                    <div class="sector-group-title" style="color: var(--purple);">📊 ĐIỂM NHẤN VOLUME</div>
+                    <div class="sector-item">
+                        <div><strong>DV Hạ tầng</strong></div>
+                        <div class="text-orange" style="font-size: 12px; text-align: right;">Vol 137%<br>Hấp thụ cung</div>
+                    </div>
+                </div>
+
+                <div class="rec-box">
+                    <strong>💡 Chiến lược:</strong> Nắm giữ Tài chính & Hạ tầng. Không mua đuổi Dịch vụ tiêu dùng.
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ===================================================================
-        // Sửa: phần dữ liệu analysisData được làm gọn, hợp lệ và an toàn để chạy.
-        // Nếu bạn muốn phục hồi toàn bộ nội dung đầy đủ, dán JSON hợp lệ (hoặc
-        // dùng template literals) thay thế phần này.
-        // ===================================================================
-        const analysisData = {
-            last_updated: "15:00 20/11/2025",
-  "strength": [
-    {
-      "ticker": "ACB",
-      "name": "Ngan hang TMCP A Chau",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 25.1,
-      "change": "-0.05 | -0.20%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 46 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "ANV",
-      "name": "CTCP Nam Viet",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 30.8,
-      "change": "+2.00 | +6.94%",
-      "change_positive": true,
-      "signal": "Effort to Rise (Breakout)",
-      "analysis": "Dòng tiền lớn đổ bộ (Volume 2.9x TB20), đẩy giá bứt phá mạnh mẽ. Nỗ lực tăng giá được xác nhận bởi mức đóng cửa cao nhất phiên, MACD tích cực ủng hộ xu hướng.",
-      "action": "Mở vị thế mua theo đà tăng (Follow trend).",
-      "counter": "Cẩn trọng Bull Trap nếu giá quay đầu giảm phủ nhận cây nến này."
-    },
-    {
-      "ticker": "APG",
-      "name": "CTCP Chung khoan APG",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 11.0,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI vùng quá bán hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "BID",
-      "name": "Ngan hang TMCP Dau tu va Phat trien Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 38.4,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 51 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "C69",
-      "name": "CTCP Xay dung 1369",
-      "sector": "Cong nghiep",
-      "exchange": "HNX",
-      "close_price": 12.7,
-      "change": "+0.30 | +2.42%",
-      "change_positive": true,
-      "signal": "Effort to Rise (Breakout)",
-      "analysis": "Dòng tiền lớn đổ bộ (Volume 2.2x TB20), đẩy giá bứt phá mạnh mẽ. Nỗ lực tăng giá được xác nhận bởi mức đóng cửa cao nhất phiên, MACD tích cực ủng hộ xu hướng.",
-      "action": "Mở vị thế mua theo đà tăng (Follow trend).",
-      "counter": "Cẩn trọng Bull Trap nếu giá quay đầu giảm phủ nhận cây nến này."
-    },
-    {
-      "ticker": "CSV",
-      "name": "CTCP Hoa chat Co ban mien Nam",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 32.5,
-      "change": "+0.75 | +2.36%",
-      "change_positive": true,
-      "signal": "Effort to Rise (Breakout)",
-      "analysis": "Dòng tiền lớn đổ bộ (Volume 1.2x TB20), đẩy giá bứt phá mạnh mẽ. Nỗ lực tăng giá được xác nhận bởi mức đóng cửa cao nhất phiên, MACD tích cực ủng hộ xu hướng.",
-      "action": "Mở vị thế mua theo đà tăng (Follow trend).",
-      "counter": "Cẩn trọng Bull Trap nếu giá quay đầu giảm phủ nhận cây nến này."
-    },
-    {
-      "ticker": "CTI",
-      "name": "CTCP Dau tu Phat trien Cuong Thuan IDICO",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 23.5,
-      "change": "-0.20 | -0.84%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 49 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "ELC",
-      "name": "CTCP Cong nghe-Vien thong ELCOM",
-      "sector": "Cong nghe",
-      "exchange": "HSX",
-      "close_price": 20.65,
-      "change": "-0.10 | -0.48%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 43 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HT1",
-      "name": "CTCP Xi Mang Vicem Ha Tien ",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 16.2,
-      "change": "-0.05 | -0.31%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.2x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 43 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "KBC",
-      "name": "Tong Cong ty Phat trien Do Thi Kinh Bac-CTCP",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 34.95,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 52 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "LCG",
-      "name": "CTCP Lizen",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 10.45,
-      "change": "-0.10 | -0.95%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 45 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NAF",
-      "name": "CTCP Nafoods Group",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 33.8,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 50 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "PNJ",
-      "name": "CTCP Vang bac Da quy Phu Nhuan",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 89.4,
-      "change": "-0.40 | -0.45%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 50 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "SGR",
-      "name": "CTCP Tong CTCP Dia oc Sai Gon",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 20.55,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 38 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "SHB",
-      "name": "Ngan hang TMCP Sai Gon-Ha Noi",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 16.5,
-      "change": "-0.10 | -0.60%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 50 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "VCG",
-      "name": "Tong CTCP Xuat nhap khau va Xay dung Viet Nam",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 24.5,
-      "change": "-0.10 | -0.41%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 44 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "VGT",
-      "name": "Tap doan Det may Viet Nam",
-      "sector": "Hang tieu dung",
-      "exchange": "UPCOM",
-      "close_price": 12.9,
-      "change": "+0.10 | +0.78%",
-      "change_positive": true,
-      "signal": "Effort to Rise (Breakout)",
-      "analysis": "Dòng tiền lớn đổ bộ (Volume 2.2x TB20), đẩy giá bứt phá mạnh mẽ. Nỗ lực tăng giá được xác nhận bởi mức đóng cửa cao nhất phiên, MACD tích cực ủng hộ xu hướng.",
-      "action": "Mở vị thế mua theo đà tăng (Follow trend).",
-      "counter": "Cẩn trọng Bull Trap nếu giá quay đầu giảm phủ nhận cây nến này."
-    },
-    {
-      "ticker": "VHC",
-      "name": "CTCP Vinh Hoan",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 60.7,
-      "change": "+2.00 | +3.41%",
-      "change_positive": true,
-      "signal": "Effort to Rise (Breakout)",
-      "analysis": "Dòng tiền lớn đổ bộ (Volume 3.0x TB20), đẩy giá bứt phá mạnh mẽ. Nỗ lực tăng giá được xác nhận bởi mức đóng cửa cao nhất phiên, MACD tích cực ủng hộ xu hướng.",
-      "action": "Mở vị thế mua theo đà tăng (Follow trend).",
-      "counter": "Cẩn trọng Bull Trap nếu giá quay đầu giảm phủ nhận cây nến này."
-    },
-    {
-      "ticker": "VSC",
-      "name": "CTCP Container Viet Nam",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 23.05,
-      "change": "+0.30 | +1.32%",
-      "change_positive": true,
-      "signal": "Effort to Rise (Breakout)",
-      "analysis": "Dòng tiền lớn đổ bộ (Volume 1.3x TB20), đẩy giá bứt phá mạnh mẽ. Nỗ lực tăng giá được xác nhận bởi mức đóng cửa cao nhất phiên, MACD tích cực ủng hộ xu hướng.",
-      "action": "Mở vị thế mua theo đà tăng (Follow trend).",
-      "counter": "Cẩn trọng Bull Trap nếu giá quay đầu giảm phủ nhận cây nến này."
+<script>
+    // --- 1. DỮ LIỆU & BIỂU ĐỒ ---
+    const rawData = [1636.43, 1663.43, 1678.5, 1687.06, 1683.18, 1695.53, 1699.63, 1714.54, 1710.22, 1726.06, 1715.33, 1698.81, 1684.09, 1686.08, 1680.9, 1671.21, 1658.07, 1641.56, 1660.65, 1666.24, 1662.33, 1661.16, 1651.98, 1661.76, 1669.75, 1667.98, 1660.36, 1680.36, 1684.32, 1690.99];
+
+    function generateTradingDates(endDateStr, count) {
+        let dates = [];
+        let currentDate = new Date(endDateStr);
+        let itemsFound = 0;
+        while (itemsFound < count) {
+            let dayOfWeek = currentDate.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                let d = currentDate.getDate();
+                let m = currentDate.getMonth() + 1;
+                let dateStr = (d < 10 ? '0' + d : d) + '/' + (m < 10 ? '0' + m : m);
+                dates.push(dateStr);
+                itemsFound++;
+            }
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+        return dates.reverse();
     }
-  ],
-  "weakness": [
-    {
-      "ticker": "BSI",
-      "name": "CTCP Chung khoan BIDV",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 42.05,
-      "change": "+0.30 | +0.72%",
-      "change_positive": true,
-      "signal": "Upthrust (UTAD)",
-      "analysis": "Nỗ lực tăng giá thất bại (Upthrust) khi giá bị bán ngược cuối phiên dù volume cao (1.4x TB20). Dấu hiệu của bẫy tăng giá (Bull Trap) trong bối cảnh RSI ở mức 47.",
-      "action": "Hạ tỷ trọng, cơ cấu danh mục.",
-      "counter": "Tín hiệu sẽ bị vô hiệu nếu giá vượt đỉnh cây nến này dứt khoát."
-    },
-    {
-      "ticker": "CDC",
-      "name": "CTCP Chuong Duong",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 27.7,
-      "change": "-1.10 | -3.82%",
-      "change_positive": false,
-      "signal": "Effort to Fall (Breakdown)",
-      "analysis": "Phe bán chiếm ưu thế tuyệt đối, đẩy giá giảm sâu với thanh khoản lớn (1.3x TB20). Tín hiệu Effort to Fall xác nhận áp lực phân phối mạnh.",
-      "action": "Thoát hàng, đứng ngoài quan sát.",
-      "counter": "Có thể là rũ bỏ (Shakeout) nếu giá hồi phục ngay lập tức."
-    },
-    {
-      "ticker": "CMG",
-      "name": "CTCP Tap doan Cong nghe CMC",
-      "sector": "Cong nghe",
-      "exchange": "HSX",
-      "close_price": 38.65,
-      "change": "+0.05 | +0.13%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.6x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "DSE",
-      "name": "CTCP Chung khoan DNSE",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 25.95,
-      "change": "+0.30 | +1.17%",
-      "change_positive": true,
-      "signal": "Upthrust (UTAD)",
-      "analysis": "Nỗ lực tăng giá thất bại (Upthrust) khi giá bị bán ngược cuối phiên dù volume cao (1.5x TB20). Dấu hiệu của bẫy tăng giá (Bull Trap) trong bối cảnh RSI ở mức 50.",
-      "action": "Hạ tỷ trọng, cơ cấu danh mục.",
-      "counter": "Tín hiệu sẽ bị vô hiệu nếu giá vượt đỉnh cây nến này dứt khoát."
-    },
-    {
-      "ticker": "E1VFVN30",
-      "name": "Quy ETF DCVFMVN30",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 33.55,
-      "change": "+0.17 | +0.51%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.6x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "FUEVFVND",
-      "name": "Quy ETF DCVFMVN DIAMOND",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 38.34,
-      "change": "+0.03 | +0.08%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.3x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "GVR",
-      "name": "Tap doan Cong nghiep Cao su Viet Nam-CTCP",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 28.25,
-      "change": "-0.85 | -2.92%",
-      "change_positive": false,
-      "signal": "Effort to Fall (Breakdown)",
-      "analysis": "Phe bán chiếm ưu thế tuyệt đối, đẩy giá giảm sâu với thanh khoản lớn (1.3x TB20). Tín hiệu Effort to Fall xác nhận áp lực phân phối mạnh.",
-      "action": "Thoát hàng, đứng ngoài quan sát.",
-      "counter": "Có thể là rũ bỏ (Shakeout) nếu giá hồi phục ngay lập tức."
-    },
-    {
-      "ticker": "HDG",
-      "name": "CTCP Tap doan Ha Do",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 32.8,
-      "change": "-0.80 | -2.38%",
-      "change_positive": false,
-      "signal": "Effort to Fall (Breakdown)",
-      "analysis": "Phe bán chiếm ưu thế tuyệt đối, đẩy giá giảm sâu với thanh khoản lớn (1.3x TB20). Tín hiệu Effort to Fall xác nhận áp lực phân phối mạnh.",
-      "action": "Thoát hàng, đứng ngoài quan sát.",
-      "counter": "Có thể là rũ bỏ (Shakeout) nếu giá hồi phục ngay lập tức."
-    },
-    {
-      "ticker": "MIG",
-      "name": "Tong CTCP Bao hiem Quan Doi",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 17.5,
-      "change": "+0.10 | +0.57%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.3x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "MWG",
-      "name": "CTCP Dau tu The gioi Di dong",
-      "sector": "Dich vu tieu dung",
-      "exchange": "HSX",
-      "close_price": 83.0,
-      "change": "+0.60 | +0.73%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.7x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "PAC",
-      "name": "CTCP Pin Ac quy mien Nam",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 24.0,
-      "change": "+0.10 | +0.42%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.5x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "QCG",
-      "name": "CTCP Quoc Cuong-Gia Lai",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 13.9,
-      "change": "+0.10 | +0.72%",
-      "change_positive": true,
-      "signal": "Upthrust (UTAD)",
-      "analysis": "Nỗ lực tăng giá thất bại (Upthrust) khi giá bị bán ngược cuối phiên dù volume cao (1.3x TB20). Dấu hiệu của bẫy tăng giá (Bull Trap) trong bối cảnh RSI ở mức 54.",
-      "action": "Hạ tỷ trọng, cơ cấu danh mục.",
-      "counter": "Tín hiệu sẽ bị vô hiệu nếu giá vượt đỉnh cây nến này dứt khoát."
-    },
-    {
-      "ticker": "TCB",
-      "name": "Ngan hang TMCP Ky thuong Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 35.35,
-      "change": "+0.20 | +0.57%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.6x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "VAB",
-      "name": "Ngan hang TMCP Viet A",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 11.15,
-      "change": "+0.10 | +0.90%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.6x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "VJC",
-      "name": "CTCP Hang khong VIETJET",
-      "sector": "Dich vu tieu dung",
-      "exchange": "HSX",
-      "close_price": 179.1,
-      "change": "+0.10 | +0.06%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.8x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "VNM",
-      "name": "CTCP Sua Viet Nam",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 60.7,
-      "change": "-1.40 | -2.25%",
-      "change_positive": false,
-      "signal": "Effort to Fall (Breakdown)",
-      "analysis": "Phe bán chiếm ưu thế tuyệt đối, đẩy giá giảm sâu với thanh khoản lớn (1.4x TB20). Tín hiệu Effort to Fall xác nhận áp lực phân phối mạnh.",
-      "action": "Thoát hàng, đứng ngoài quan sát.",
-      "counter": "Có thể là rũ bỏ (Shakeout) nếu giá hồi phục ngay lập tức."
-    },
-    {
-      "ticker": "VRE",
-      "name": "CTCP Vincom Retail",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 32.35,
-      "change": "+0.15 | +0.47%",
-      "change_positive": true,
-      "signal": "No Demand",
-      "analysis": "Giá tăng nhưng thiếu sự đồng thuận của dòng tiền (Volume 0.5x TB20). Tín hiệu No Demand cảnh báo động lực tăng giá đang suy yếu.",
-      "action": "Thận trọng, không nên mua đuổi.",
-      "counter": "Có thể là nhịp tích lũy cạn cung trước khi bùng nổ nếu thị trường chung tốt."
-    },
-    {
-      "ticker": "VTP",
-      "name": "Tong CTCP Buu chinh Viettel",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 108.8,
-      "change": "+4.20 | +4.02%",
-      "change_positive": true,
-      "signal": "Buying Climax",
-      "analysis": "Cao trào mua (Buying Climax) xuất hiện với volume kỷ lục (0.9x TB20) nhưng giá bị bán ngược. Dấu hiệu chốt lời ồ ạt từ dòng tiền lớn tại vùng giá cao.",
-      "action": "Canh chốt lời, hạn chế mua đuổi.",
-      "counter": "Nếu dòng tiền vẫn quá mạnh hấp thụ hết lượng chốt lời, giá có thể còn tăng tiếp."
-    }
-  ],
-  "observe": [
-    {
-      "ticker": "ABB",
-      "name": "Ngan hang TMCP An Binh",
-      "sector": "Tai chinh",
-      "exchange": "UPCOM",
-      "close_price": 14.8,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "ACV",
-      "name": "Tong Cong ty Cang hang khong Viet Nam-CTCP",
-      "sector": "Cong nghiep",
-      "exchange": "UPCOM",
-      "close_price": 54.2,
-      "change": "-0.60 | -1.09%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.7x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "AGG",
-      "name": "CTCP Dau tu va Phat trien Bat dong san An Gia",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 16.35,
-      "change": "-0.05 | -0.30%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 44 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "AGR",
-      "name": "CTCP Chung khoan Agribank",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 15.95,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "BAF",
-      "name": "CTCP Nong nghiep BAF Viet Nam",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 32.0,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "BMI",
-      "name": "Tong CTCP Bao Minh",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 19.2,
-      "change": "-0.10 | -0.52%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.3x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "BSR",
-      "name": "CTCP Loc-Hoa dau Binh Son",
-      "sector": "Dau khi",
-      "exchange": "HSX",
-      "close_price": 16.3,
-      "change": "-0.15 | -0.91%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.5x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 49 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "BVB",
-      "name": "Ngan hang TMCP Ban Viet",
-      "sector": "Tai chinh",
-      "exchange": "UPCOM",
-      "close_price": 13.7,
-      "change": "-0.10 | -0.72%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "BVH",
-      "name": "Tap doan Bao Viet",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 54.2,
-      "change": "+0.10 | +0.18%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "BVS",
-      "name": "CTCP Chung khoan Bao Viet",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 33.3,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "CEO",
-      "name": "CTCP Tap doan C.E.O",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 26.0,
-      "change": "-0.50 | -1.89%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 0.6x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "CII",
-      "name": "CTCP Dau tu Ha tang Ky thuat Thanh pho Ho Chi Minh",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 26.4,
-      "change": "-0.15 | -0.56%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 0.7x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "CSM",
-      "name": "CTCP Cong nghiep cao su Mien Nam",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 14.2,
-      "change": "+0.05 | +0.35%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.1x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "CTD",
-      "name": "CTCP Xay dung COTECCONS",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 87.9,
-      "change": "-0.90 | -1.01%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 49 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "CTF",
-      "name": "CTCP City Auto",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 20.0,
-      "change": "+0.50 | +2.56%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "CTG",
-      "name": "Ngan hang TMCP Cong Thuong Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 49.4,
-      "change": "+0.55 | +1.13%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 0.7x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "CTR",
-      "name": "Tong CTCP Cong trinh Viettel",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 93.0,
-      "change": "+1.80 | +1.97%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "CTS",
-      "name": "CTCP Chung khoan Ngan hang Cong thuong Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 36.5,
-      "change": "+0.40 | +1.11%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "DBC",
-      "name": "CTCP Tap doan Dabaco Viet Nam",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 26.55,
-      "change": "+0.10 | +0.38%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.4x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "DC4",
-      "name": "CTCP Dicera Holdings",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 11.9,
-      "change": "+0.25 | +2.15%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 2.2x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "DCL",
-      "name": "CTCP Duoc pham Cuu Long",
-      "sector": "Y te",
-      "exchange": "HSX",
-      "close_price": 34.0,
-      "change": "-0.50 | -1.45%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.5x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 56 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "DCM",
-      "name": "CTCP-Tong Cong ty Phan bon Dau khi Ca Mau",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 34.8,
-      "change": "-0.20 | -0.57%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "DDV",
-      "name": "CTCP DAP-VINACHEM",
-      "sector": "Vat lieu co ban",
-      "exchange": "UPCOM",
-      "close_price": 29.5,
-      "change": "-0.30 | -1.01%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 42 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "DGC",
-      "name": "CTCP Tap doan Hoa chat Duc Giang",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 98.8,
-      "change": "-0.20 | -0.20%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.5x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "DGW",
-      "name": "CTCP The gioi so",
-      "sector": "Dich vu tieu dung",
-      "exchange": "HSX",
-      "close_price": 44.85,
-      "change": "+2.15 | +5.04%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 4.1x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "DIG",
-      "name": "Tong CTCP Dau tu Phat trien Xay dung",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 21.0,
-      "change": "-0.35 | -1.64%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "DPG",
-      "name": "CTCP Tap doan Dat Phuong",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 45.65,
-      "change": "+0.70 | +1.56%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.6x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "DPM",
-      "name": "Tong Cong ty Phan bon va Hoa chat Dau khi-CTCP",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 24.15,
-      "change": "-0.20 | -0.82%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "DPR",
-      "name": "CTCP Cao su Dong Phu",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 38.8,
-      "change": "-0.10 | -0.26%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "DRI",
-      "name": "CTCP Dau tu Cao su Dak Lak",
-      "sector": "Vat lieu co ban",
-      "exchange": "UPCOM",
-      "close_price": 12.8,
-      "change": "-0.10 | -0.78%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 68 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "DTD",
-      "name": "CTCP Dau tu Phat trien Thanh Dat",
-      "sector": "Cong nghiep",
-      "exchange": "HNX",
-      "close_price": 18.6,
-      "change": "-0.20 | -1.06%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "DXG",
-      "name": "CTCP Tap doan Dat Xanh",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 19.6,
-      "change": "-0.05 | -0.25%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 47 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "DXS",
-      "name": "CTCP Dich vu Bat dong san Dat Xanh",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 10.15,
-      "change": "-0.05 | -0.49%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 44 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "EIB",
-      "name": "Ngan hang TMCP Xuat Nhap Khau Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 22.5,
-      "change": "+0.35 | +1.58%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.8x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "EVF",
-      "name": "Cong ty Tai chinh Co phan Dien luc",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 12.55,
-      "change": "+0.10 | +0.80%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "FCN",
-      "name": "CTCP FECON",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 15.5,
-      "change": "-0.10 | -0.64%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "FPT",
-      "name": "CTCP FPT",
-      "sector": "Cong nghe",
-      "exchange": "HSX",
-      "close_price": 100.0,
-      "change": "-1.00 | -0.99%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 52 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "FRT",
-      "name": "CTCP Ban le Ky thuat so FPT",
-      "sector": "Dich vu tieu dung",
-      "exchange": "HSX",
-      "close_price": 148.5,
-      "change": "+1.90 | +1.30%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.7x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "FTS",
-      "name": "CTCP Chung khoan FPT",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 34.4,
-      "change": "+0.30 | +0.88%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "GAS",
-      "name": "Tong Cong ty khi Viet Nam-CTCP",
-      "sector": "Cac dich vu ha tang",
-      "exchange": "HSX",
-      "close_price": 62.4,
-      "change": "-0.60 | -0.95%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "GEE",
-      "name": "CTCP Dien luc Gelex",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 170.8,
-      "change": "-0.20 | -0.12%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.8x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 56 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "GEG",
-      "name": "CTCP Dien Gia Lai",
-      "sector": "Cac dich vu ha tang",
-      "exchange": "HSX",
-      "close_price": 15.1,
-      "change": "-0.05 | -0.33%",
-      "change_positive": false,
-      "signal": "Stopping Volume",
-      "analysis": "Lực cầu ngầm mạnh mẽ nhập cuộc (Volume 1.4x TB20) hấp thụ áp lực bán, giúp giá đóng cửa ở nửa trên nến. Tín hiệu Stopping Volume cho thấy phe mua đang đỡ giá quyết liệt. Bối cảnh RSI ở mức 44, MACD tiêu cực.",
-      "action": "Cân nhắc giải ngân thăm dò, kỳ vọng tạo đáy ngắn hạn.",
-      "counter": "Rủi ro nếu giá tiếp tục phá đáy với volume lớn."
-    },
-    {
-      "ticker": "GEX",
-      "name": "CTCP Tap doan GELEX",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 45.65,
-      "change": "+0.15 | +0.33%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.5x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 44 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "GMD",
-      "name": "CTCP Gemadept",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 63.5,
-      "change": "-0.10 | -0.16%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.5x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 44 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HAG",
-      "name": "CTCP Hoang Anh Gia Lai",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 18.85,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.2x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "HAH",
-      "name": "CTCP Van tai va Xep do Hai An",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 67.5,
-      "change": "+1.50 | +2.27%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.8x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 69 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HAX",
-      "name": "CTCP Dich Vu O To Hang Xanh",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 10.8,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 46 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HCM",
-      "name": "CTCP Chung khoan Thanh pho Ho Chi Minh",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 22.95,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "HDB",
-      "name": "Ngan hang TMCP Phat trien Thanh pho Ho Chi Minh",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 30.45,
-      "change": "+0.40 | +1.33%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.8x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 47 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HDC",
-      "name": "CTCP Phat trien Nha Ba Ria-Vung Tau",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 28.45,
-      "change": "-0.40 | -1.39%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 43 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HHP",
-      "name": "CTCP HHP Global",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 12.05,
-      "change": "-0.35 | -2.82%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "HHS",
-      "name": "CTCP Dau tu dich vu Hoang Huy",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 14.85,
-      "change": "-0.25 | -1.66%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 43 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HHV",
-      "name": "CTCP Dau tu Ha tang giao thong Deo Ca",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 14.3,
-      "change": "-0.10 | -0.69%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "HPG",
-      "name": "CTCP Tap doan Hoa Phat",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 27.5,
-      "change": "+0.20 | +0.73%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "HSG",
-      "name": "CTCP Tap doan Hoa Sen",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 17.3,
-      "change": "+0.10 | +0.58%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "HSL",
-      "name": "CTCP Dau tu Phat trien Thuc pham Hong Ha",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 9.39,
-      "change": "-0.29 | -3.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.8x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 46 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "HUT",
-      "name": "CTCP Tasco",
-      "sector": "Cong nghiep",
-      "exchange": "HNX",
-      "close_price": 18.0,
-      "change": "-0.20 | -1.10%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "HVN",
-      "name": "Tong Cong ty Hang khong Viet Nam-CTCP",
-      "sector": "Dich vu tieu dung",
-      "exchange": "HSX",
-      "close_price": 30.25,
-      "change": "+0.75 | +2.54%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.3x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "IDC",
-      "name": "Tong cong ty IDICO-CTCP",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 41.1,
-      "change": "-1.30 | -3.07%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.2x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "IJC",
-      "name": "CTCP Phat trien Ha tang Ky thuat",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 12.35,
-      "change": "-0.15 | -1.20%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 49 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "IPA",
-      "name": "CTCP Tap doan Dau tu I.P.A",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 19.6,
-      "change": "+0.10 | +0.51%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "KDH",
-      "name": "CTCP Dau tu va Kinh doanh Nha Khang Dien",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 35.4,
-      "change": "+0.30 | +0.85%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "KLB",
-      "name": "Ngan hang TMCP Kien Long",
-      "sector": "Tai chinh",
-      "exchange": "UPCOM",
-      "close_price": 15.7,
-      "change": "+0.30 | +1.95%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "KOS",
-      "name": "CTCP Kosy",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 39.1,
-      "change": "+0.05 | +0.13%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "KSB",
-      "name": "CTCP Khoang san va Xay dung Binh Duong",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 18.9,
-      "change": "-0.15 | -0.79%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "LPB",
-      "name": "Ngan hang TMCP Loc Phat Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 49.55,
-      "change": "-0.65 | -1.29%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 48 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "MBB",
-      "name": "Ngan hang TMCP Quan Doi",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 23.7,
-      "change": "-0.10 | -0.42%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "MBS",
-      "name": "CTCP Chung khoan MB",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 30.5,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "MCH",
-      "name": "CTCP Hang tieu dung MASAN",
-      "sector": "Hang tieu dung",
-      "exchange": "UPCOM",
-      "close_price": 215.0,
-      "change": "-4.00 | -1.83%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI vùng quá mua hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "MSB",
-      "name": "Ngan hang TMCP Hang Hai Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 12.3,
-      "change": "-0.10 | -0.81%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "MSN",
-      "name": "CTCP Tap doan MaSan",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 79.0,
-      "change": "-0.70 | -0.88%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 48 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "MSR",
-      "name": "CTCP MaSan High-Tech Materials",
-      "sector": "Vat lieu co ban",
-      "exchange": "UPCOM",
-      "close_price": 22.8,
-      "change": "-0.50 | -2.15%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 47 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NAB",
-      "name": "Ngan hang TMCP Nam A",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 14.5,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.8x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 51 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NAG",
-      "name": "CTCP Tap doan Nagakawa",
-      "sector": "Cong nghiep",
-      "exchange": "HNX",
-      "close_price": 8.6,
-      "change": "-0.10 | -1.15%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 32 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NDN",
-      "name": "CTCP Dau tu Phat trien Nha Da Nang",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 11.7,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.9x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 36 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NHA",
-      "name": "Tong Cong ty Dau tu Phat trien Nha va Do thi Nam Ha Noi",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 20.95,
-      "change": "+0.05 | +0.24%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.8x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 50 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NKG",
-      "name": "CTCP Thep Nam Kim",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 17.25,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.4x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "NLG",
-      "name": "CTCP Dau tu Nam Long",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 37.5,
-      "change": "-0.40 | -1.06%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "NT2",
-      "name": "CTCP Dien luc Dau khi Nhon Trach 2",
-      "sector": "Cac dich vu ha tang",
-      "exchange": "HSX",
-      "close_price": 24.1,
-      "change": "-0.05 | -0.21%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 58 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NTL",
-      "name": "CTCP Phat trien do thi Tu Liem",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 18.2,
-      "change": "-0.15 | -0.82%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 48 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NVB",
-      "name": "Ngan hang TMCP Quoc Dan",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 14.3,
-      "change": "+0.10 | +0.70%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.5x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 49 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "NVL",
-      "name": "CTCP Tap doan Dau tu Dia oc No Va",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 15.85,
-      "change": "+0.75 | +4.97%",
-      "change_positive": true,
-      "signal": "Indecision Bar (Doji)",
-      "analysis": "Tâm lý lưỡng lự bao trùm (Doji) với cung cầu giằng co. Volume 2.3x TB20 cho thấy sự đấu tranh quyết liệt chưa phân thắng bại.",
-      "action": "Chờ đợi tín hiệu xác nhận xu hướng tiếp theo.",
-      "counter": "Biến động mạnh có thể xảy ra ngay sau phiên này."
-    },
-    {
-      "ticker": "OCB",
-      "name": "Ngan hang TMCP Phuong Dong",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 12.45,
-      "change": "+0.10 | +0.81%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "OIL",
-      "name": "Tong Cong ty Dau Viet Nam-CTCP",
-      "sector": "Dau khi",
-      "exchange": "UPCOM",
-      "close_price": 10.9,
-      "change": "-0.10 | -0.91%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "ORS",
-      "name": "CTCP Chung khoan Tien Phong",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 14.45,
-      "change": "+0.25 | +1.76%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.4x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 50 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "PAN",
-      "name": "CTCP Tap doan PAN",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 28.8,
-      "change": "-0.25 | -0.86%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "PC1",
-      "name": "CTCP Tap doan PC1",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 22.5,
-      "change": "-0.05 | -0.22%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "PDR",
-      "name": "CTCP Phat trien Bat dong san Phat Dat",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 23.0,
-      "change": "-0.05 | -0.22%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 52 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "PET",
-      "name": "Tong CTCP Dich vu Tong hop Dau khi",
-      "sector": "Dich vu tieu dung",
-      "exchange": "HSX",
-      "close_price": 32.7,
-      "change": "-0.50 | -1.51%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 57 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "PLX",
-      "name": "Tap doan Xang dau Viet Nam",
-      "sector": "Dau khi",
-      "exchange": "HSX",
-      "close_price": 34.55,
-      "change": "-0.15 | -0.43%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.6x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "POW",
-      "name": "Tong Cong ty Dien luc Dau khi Viet Nam-CTCP",
-      "sector": "Cac dich vu ha tang",
-      "exchange": "HSX",
-      "close_price": 15.1,
-      "change": "-0.20 | -1.31%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "PPC",
-      "name": "CTCP Nhiet dien Pha Lai",
-      "sector": "Cac dich vu ha tang",
-      "exchange": "HSX",
-      "close_price": 10.1,
-      "change": "-0.05 | -0.49%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.7x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "PVC",
-      "name": "Tong Cong ty Hoa chat va Dich vu dau khi-CTCP",
-      "sector": "Dau khi",
-      "exchange": "HNX",
-      "close_price": 11.1,
-      "change": "-0.20 | -1.77%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "PVD",
-      "name": "Tong CTCP Khoan va Dich vu Khoan Dau khi",
-      "sector": "Dau khi",
-      "exchange": "HSX",
-      "close_price": 26.15,
-      "change": "-0.55 | -2.06%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI vùng quá mua hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "PVS",
-      "name": "Tong CTCP Dich vu Ky thuat Dau khi Viet Nam",
-      "sector": "Dau khi",
-      "exchange": "HNX",
-      "close_price": 34.8,
-      "change": "-0.40 | -1.14%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "PVT",
-      "name": "Tong CTCP Van tai Dau khi",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 18.55,
-      "change": "-0.15 | -0.80%",
-      "change_positive": false,
-      "signal": "Stopping Volume",
-      "analysis": "Lực cầu ngầm mạnh mẽ nhập cuộc (Volume 1.2x TB20) hấp thụ áp lực bán, giúp giá đóng cửa ở nửa trên nến. Tín hiệu Stopping Volume cho thấy phe mua đang đỡ giá quyết liệt. Bối cảnh RSI ở mức 61, MACD tích cực.",
-      "action": "Cân nhắc giải ngân thăm dò, kỳ vọng tạo đáy ngắn hạn.",
-      "counter": "Rủi ro nếu giá tiếp tục phá đáy với volume lớn."
-    },
-    {
-      "ticker": "REE",
-      "name": "CTCP Co dien lanh",
-      "sector": "Cac dich vu ha tang",
-      "exchange": "HSX",
-      "close_price": 67.4,
-      "change": "+1.10 | +1.66%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 2.3x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "SAB",
-      "name": "Tong CTCP Bia-Ruou-Nuoc giai khat Sai Gon",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 47.2,
-      "change": "-0.05 | -0.11%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "SBT",
-      "name": "CTCP Thanh Thanh Cong-Bien Hoa",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 25.4,
-      "change": "+0.05 | +0.20%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "SCS",
-      "name": "CTCP Dich vu Hang hoa Sai Gon",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 56.2,
-      "change": "+0.90 | +1.63%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 2.6x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "SHI",
-      "name": "CTCP Quoc te Son Ha",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 14.4,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.8x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "SHS",
-      "name": "CTCP Chung khoan Sai Gon-Ha Noi",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 22.9,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 47 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "SIP",
-      "name": "CTCP Dau tu Sai Gon VRG",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 59.7,
-      "change": "-0.80 | -1.32%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 64 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "SMC",
-      "name": "CTCP Dau tu Thuong mai SMC",
-      "sector": "Vat lieu co ban",
-      "exchange": "HSX",
-      "close_price": 13.6,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 65 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "SSB",
-      "name": "Ngan hang TMCP Dong Nam A",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 17.35,
-      "change": "-0.10 | -0.57%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "SSI",
-      "name": "CTCP Chung khoan SSI",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 35.55,
-      "change": "+0.15 | +0.42%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 48 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "STB",
-      "name": "Ngan hang TMCP Sai Gon Thuong Tin",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 49.5,
-      "change": "+0.60 | +1.23%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "SZC",
-      "name": "CTCP Sonadezi Chau Duc",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 32.45,
-      "change": "-0.20 | -0.61%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.9x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 58 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "TAL",
-      "name": "CTCP Dau tu Bat dong san Taseco",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 44.3,
-      "change": "-0.55 | -1.23%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 46 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "TCH",
-      "name": "CTCP Dau tu Dich vu Tai chinh Hoang Huy",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 21.75,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "TCI",
-      "name": "CTCP Chung Khoan Thanh Cong",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 10.1,
-      "change": "-0.05 | -0.49%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "TCM",
-      "name": "CTCP Det may-Dau tu-Thuong mai Thanh Cong",
-      "sector": "Hang tieu dung",
-      "exchange": "HSX",
-      "close_price": 29.0,
-      "change": "+0.05 | +0.17%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.4x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "TDC",
-      "name": "CTCP Kinh doanh va Phat trien Binh Duong",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 12.05,
-      "change": "-0.05 | -0.41%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.4x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "TNG",
-      "name": "CTCP Dau tu va Thuong mai TNG",
-      "sector": "Hang tieu dung",
-      "exchange": "HNX",
-      "close_price": 20.1,
-      "change": "+0.10 | +0.50%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.4x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "TPB",
-      "name": "Ngan Hang TMCP Tien Phong",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 17.6,
-      "change": "+0.45 | +2.62%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.6x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "TVC",
-      "name": "CTCP Tap doan Quan ly tai san T-CORP",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 9.2,
-      "change": "-0.20 | -2.13%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.2x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI vùng quá bán hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "VC3",
-      "name": "CTCP Tap doan Nam Me Kong",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 27.7,
-      "change": "-0.40 | -1.42%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.2x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VC7",
-      "name": "CTCP Tap doan BGI",
-      "sector": "Cong nghiep",
-      "exchange": "HNX",
-      "close_price": 10.9,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VCB",
-      "name": "Ngan hang TMCP Ngoai thuong Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 59.9,
-      "change": "-0.30 | -0.50%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.7x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 46 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "VCI",
-      "name": "CTCP Chung Khoan Vietcap",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 36.4,
-      "change": "+0.20 | +0.55%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VDS",
-      "name": "CTCP Chung khoan Rong Viet",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 19.15,
-      "change": "+0.20 | +1.06%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.4x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "VEA",
-      "name": "Tong Cong ty May dong luc va May nong nghiep Viet Nam-CTCP",
-      "sector": "Cong nghiep",
-      "exchange": "UPCOM",
-      "close_price": 36.8,
-      "change": "-0.11 | -0.30%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.3x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "VFS",
-      "name": "CTCP Chung khoan Nhat Viet",
-      "sector": "Tai chinh",
-      "exchange": "HNX",
-      "close_price": 16.0,
-      "change": "-0.20 | -1.23%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.4x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "VGC",
-      "name": "Tong Cong ty Viglacera-CTCP",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 46.8,
-      "change": "-0.20 | -0.43%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.9x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 50 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "VGI",
-      "name": "Tong CTCP Dau tu Quoc te Viettel",
-      "sector": "Vien thong",
-      "exchange": "UPCOM",
-      "close_price": 80.9,
-      "change": "-0.10 | -0.12%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.1x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VGS",
-      "name": "CTCP Ong thep Viet-Duc VG PIPE",
-      "sector": "Vat lieu co ban",
-      "exchange": "HNX",
-      "close_price": 29.2,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 51 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "VHM",
-      "name": "CTCP Vinhomes",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 97.0,
-      "change": "+2.00 | +2.11%",
-      "change_positive": true,
-      "signal": "Test for Supply",
-      "analysis": "Áp lực bán cạn kiệt (Volume 0.6x TB20), biên độ hẹp. Đây là pha Test Cung thành công, cho thấy nhà đầu tư không còn muốn bán giá thấp. Bối cảnh RSI ở mức 45 hỗ trợ nhịp hồi.",
-      "action": "Vùng giá an toàn để mua gom, chờ dòng tiền quay lại.",
-      "counter": "Nếu thanh khoản tiếp tục mất hút mà giá không tăng, cẩn trọng kịch bản 'bào mòn' tài khoản."
-    },
-    {
-      "ticker": "VIB",
-      "name": "Ngan hang TMCP Quoc te Viet Nam",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 18.7,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.2x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "VIC",
-      "name": "Tap doan Vingroup-CTCP",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 220.0,
-      "change": "+3.00 | +1.38%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.8x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tiêu cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VIX",
-      "name": "CTCP Chung khoan VIX",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 26.0,
-      "change": "+0.00 | +0.00%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VND",
-      "name": "CTCP Chung khoan VNDIRECT",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 20.15,
-      "change": "+0.25 | +1.26%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 1.3x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "VOS",
-      "name": "CTCP Van tai Bien Viet Nam",
-      "sector": "Cong nghiep",
-      "exchange": "HSX",
-      "close_price": 13.2,
-      "change": "+0.20 | +1.54%",
-      "change_positive": true,
-      "signal": "No Clear Signal",
-      "analysis": "Biến động giá chưa tạo thành tín hiệu VSA rõ ràng (Volume 2.3x TB20). Cổ phiếu đang vận động theo quán tính.",
-      "action": "Quan sát thêm.",
-      "counter": "Chưa có rủi ro hoặc cơ hội đặc biệt rõ rệt."
-    },
-    {
-      "ticker": "VPB",
-      "name": "Ngan hang TMCP Viet Nam Thinh Vuong",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 28.8,
-      "change": "+0.70 | +2.49%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VPI",
-      "name": "CTCP Phat trien Bat dong san Van Phu",
-      "sector": "Tai chinh",
-      "exchange": "HSX",
-      "close_price": 54.3,
-      "change": "-0.20 | -0.37%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.2x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "VTZ",
-      "name": "CTCP San xuat va Thuong mai Nhua Viet Thanh",
-      "sector": "Vat lieu co ban",
-      "exchange": "HNX",
-      "close_price": 18.5,
-      "change": "+0.10 | +0.54%",
-      "change_positive": true,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (0.9x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    },
-    {
-      "ticker": "YEG",
-      "name": "CTCP Tap doan Yeah1",
-      "sector": "Dich vu tieu dung",
-      "exchange": "HSX",
-      "close_price": 12.2,
-      "change": "-0.05 | -0.41%",
-      "change_positive": false,
-      "signal": "Normal Bar",
-      "analysis": "Giao dịch cân bằng, volume quanh mức trung bình (1.0x TB20). Cổ phiếu vận động ổn định theo xu hướng chủ đạo, MACD tích cực.",
-      "action": "Nắm giữ vị thế hiện tại.",
-      "counter": "Xu hướng có thể thay đổi nếu thị trường chung biến động."
-    }
-  ]
-};
 
-        // ===================== Helper render functions =======================
-        const el = selector => document.querySelector(selector);
-        const elAll = selector => Array.from(document.querySelectorAll(selector));
-
-        // Update header dates
-        el('#update-date').textContent = 'Ngày cập nhật: ' + (analysisData.last_updated || 'Không có');
-        const now = new Date();
-        el('#current-date').textContent = 'Ngày hiện tại: ' + now.toLocaleString('vi-VN');
-
-        // Utility to create ticker mini card
-        function createTickerCard(item) {
-            const card = document.createElement('div');
-            card.className = 'ticker-card-mini';
-            card.dataset.ticker = item.ticker;
-
-            const info = document.createElement('div');
-            info.className = 'info';
-            const h4 = document.createElement('h4');
-            h4.textContent = item.ticker + ' — ' + item.name;
-            const p = document.createElement('p');
-            p.textContent = item.sector + ' · ' + item.exchange;
-            info.appendChild(h4);
-            info.appendChild(p);
-
-            const change = document.createElement('div');
-            change.className = 'change';
-            change.textContent = item.change;
-            if (item.change_positive) change.classList.add('positive');
-            else if (!item.change_positive && item.change.indexOf('+') === 0) change.classList.add('positive');
-            else change.classList.add('negative');
-
-            card.appendChild(info);
-            card.appendChild(change);
-
-            card.addEventListener('click', () => {
-                elAll('.ticker-card-mini').forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                showDetail(item);
-            });
-
-            return card;
-        }
-
-        // Render lists
-        function renderLists() {
-            const strengthList = el('#strength-list');
-            const weaknessList = el('#weakness-list');
-            const observeList = el('#observe-list');
-
-            strengthList.innerHTML = '';
-            weaknessList.innerHTML = '';
-            observeList.innerHTML = '';
-
-            analysisData.strength.forEach(i => strengthList.appendChild(createTickerCard(i)));
-            analysisData.weakness.forEach(i => weaknessList.appendChild(createTickerCard(i)));
-            analysisData.observe.forEach(i => observeList.appendChild(createTickerCard(i)));
-
-            el('#strength-count p').textContent = analysisData.strength.length + ' mã';
-            el('#weakness-count p').textContent = analysisData.weakness.length + ' mã';
-            el('#observe-count p').textContent = analysisData.observe.length + ' mã';
-        }
-
-        // Show detail for a ticker
-        function showDetail(item) {
-            const detail = el('#detail-view');
-            detail.innerHTML = '';
-
-            const header = document.createElement('div');
-            header.className = 'detail-header';
-            const h2 = document.createElement('h2');
-            h2.textContent = item.ticker + ' — ' + item.name;
-            const p = document.createElement('p');
-            p.textContent = item.sector + ' · ' + item.exchange;
-            header.appendChild(h2);
-            header.appendChild(p);
-
-            const market = document.createElement('div');
-            market.className = 'detail-market';
-            const price = document.createElement('div');
-            price.className = 'price';
-            price.textContent = 'Giá đóng cửa: ' + item.close_price;
-            const ch = document.createElement('div');
-            ch.textContent = 'Thay đổi: ' + item.change;
-            if (item.change_positive) ch.classList.add('change', 'positive'); else ch.classList.add('change', 'negative');
-            market.appendChild(price);
-            market.appendChild(ch);
-
-            const analysis = document.createElement('div');
-            analysis.className = 'detail-analysis';
-            const h3 = document.createElement('h3');
-            h3.textContent = 'Phân tích & Hành động';
-            const pAnalysis = document.createElement('p');
-            pAnalysis.textContent = item.analysis || '';
-            const pAction = document.createElement('p');
-            pAction.innerHTML = '<strong>Hành động:</strong> ' + (item.action || '');
-            const pCounter = document.createElement('p');
-            pCounter.innerHTML = '<strong>Rủi ro / Lưu ý:</strong> ' + (item.counter || '');
-
-            analysis.appendChild(h3);
-            analysis.appendChild(pAnalysis);
-            analysis.appendChild(pAction);
-            analysis.appendChild(pCounter);
-
-            detail.appendChild(header);
-            detail.appendChild(market);
-            detail.appendChild(analysis);
-        }
-
-        // Tabs
-        elAll('.tab-button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                elAll('.tab-button').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const tab = btn.dataset.tab;
-                elAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-                const activeId = tab + '-content';
-                const target = el('#' + activeId);
-                if (target) target.classList.add('active');
-            });
-        });
-
-        // Search
-        const searchInput = el('#universal-search');
-        const resultsList = el('#search-results-list');
-        const noResults = el('#no-results-message');
-
-        function searchAll(q) {
-            const qlc = q.trim().toLowerCase();
-            if (!qlc) return [];
-            const all = [...analysisData.strength, ...analysisData.weakness, ...analysisData.observe];
-            return all.filter(item => {
-                return (
-                    item.ticker.toLowerCase().includes(qlc) ||
-                    (item.name && item.name.toLowerCase().includes(qlc)) ||
-                    (item.signal && item.signal.toLowerCase().includes(qlc)) ||
-                    (item.action && item.action.toLowerCase().includes(qlc))
-                );
-            });
-        }
-
-        function renderSearchResults(q) {
-            resultsList.innerHTML = '';
-            const matches = searchAll(q);
-            if (matches.length === 0) {
-                noResults.classList.remove('hidden');
-            } else {
-                noResults.classList.add('hidden');
-                matches.forEach(item => {
-                    const row = document.createElement('div');
-                    row.className = 'search-result-item';
-                    row.dataset.ticker = item.ticker;
-
-                    const left = document.createElement('div');
-                    const title = document.createElement('div');
-                    title.className = 'result-title';
-                    title.textContent = item.ticker + ' — ' + item.name;
-                    const meta = document.createElement('div');
-                    meta.className = 'result-type stock';
-                    meta.textContent = item.sector + ' · ' + item.exchange;
-                    left.appendChild(title);
-                    left.appendChild(meta);
-
-                    const right = document.createElement('div');
-                    right.className = 'result-action';
-                    right.textContent = item.signal || '';
-
-                    row.appendChild(left);
-                    row.appendChild(right);
-
-                    row.addEventListener('click', () => {
-                        // switch to strength/weakness/observe tab containing this item if possible
-                        const allTabs = {
-                            strength: analysisData.strength,
-                            weakness: analysisData.weakness,
-                            observe: analysisData.observe
-                        };
-                        for (const tabName of Object.keys(allTabs)) {
-                            if (allTabs[tabName].some(it => it.ticker === item.ticker)) {
-                                elAll('.tab-button').forEach(b => b.classList.remove('active'));
-                                const btn = el('.tab-button[data-tab="' + tabName + '"]');
-                                if (btn) btn.classList.add('active');
-                                elAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-                                const target = el('#' + tabName + '-content');
-                                if (target) target.classList.add('active');
-                                break;
-                            }
-                        }
-                        // highlight and show detail
-                        const selector = '.ticker-card-mini[data-ticker="' + item.ticker + '"]';
-                        const card = el(selector);
-                        if (card) card.click();
-                        else showDetail(item);
-                    });
-
-                    resultsList.appendChild(row);
-                });
+    const labels = generateTradingDates('2025-11-28', rawData.length);
+    const ctx = document.getElementById('marketChart').getContext('2d');
+    
+    // Khởi tạo Chart
+    let marketChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'VNINDEX',
+                data: rawData,
+                borderColor: '#27ae60',
+                backgroundColor: createGradient(ctx),
+                borderWidth: 2,
+                pointRadius: 2,
+                pointHoverRadius: 5,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    titleColor: '#333',
+                    bodyColor: '#333',
+                    borderColor: '#ccc',
+                    borderWidth: 1,
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#95a5a6', maxTicksLimit: 6 }
+                },
+                y: {
+                    grid: { color: '#f0f0f0', borderDash: [4, 4] },
+                    ticks: { color: '#95a5a6' }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
             }
         }
+    });
 
-        searchInput.addEventListener('input', (e) => {
-            const q = e.target.value || '';
-            // show search tab results
-            renderSearchResults(q);
+    function createGradient(ctx) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(39, 174, 96, 0.2)');
+        gradient.addColorStop(1, 'rgba(39, 174, 96, 0.0)');
+        return gradient;
+    }
+
+    // --- 2. LOGIC DARK MODE ---
+    function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        
+        // Kiểm tra xem đang là Dark hay Light để chỉnh màu Grid biểu đồ
+        const isDark = body.classList.contains('dark-mode');
+        
+        // Cập nhật màu Chart.js
+        const gridColor = isDark ? '#2c3e50' : '#f0f0f0';
+        const tickColor = isDark ? '#b0b0b0' : '#95a5a6';
+        
+        marketChart.options.scales.y.grid.color = gridColor;
+        marketChart.options.scales.x.ticks.color = tickColor;
+        marketChart.options.scales.y.ticks.color = tickColor;
+        
+        marketChart.update(); // Vẽ lại biểu đồ
+    }
+
+    // --- 3. LOGIC CHỤP ẢNH (SCREENSHOT) ---
+    function captureDashboard() {
+        // Ẩn các nút bấm trước khi chụp cho đẹp (Optional)
+        const btnArea = document.querySelector('.header-tools');
+        btnArea.style.visibility = 'hidden';
+
+        html2canvas(document.body, {
+            scrollX: 0,
+            scrollY: 0, // Chụp từ đầu trang
+            windowWidth: document.documentElement.scrollWidth,
+            windowHeight: document.documentElement.scrollHeight
+        }).then(canvas => {
+            // Hiện lại nút bấm
+            btnArea.style.visibility = 'visible';
+            
+            // Tạo link tải về
+            const link = document.createElement('a');
+            link.download = 'BaoCao_VNINDEX_28_11.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
         });
+    }
+</script>
 
-        // Initial render
-        renderLists();
-
-        // Optionally, show first strength item detail
-        if (analysisData.strength.length > 0) {
-            const first = analysisData.strength[0];
-            const card = el('.ticker-card-mini[data-ticker="' + first.ticker + '"]');
-            if (card) card.classList.add('active');
-            showDetail(first);
-        }
-    </script>
 </body>
 </html>
-```
-
-
-
-
-
-
-
-
