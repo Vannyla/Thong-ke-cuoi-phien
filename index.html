@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Báo Cáo Thị Trường & Bộ Lọc VSA - Purple Theme</title>
+    <title>Báo Cáo Thị Trường & Tín Hiệu Kỹ Thuật - 02/12/2025</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -96,6 +96,7 @@
         .table tbody td {
             font-size: 0.9rem;
             padding: 12px;
+            vertical-align: middle;
         }
 
         /* --- Recommendation Card --- */
@@ -170,6 +171,17 @@
         .table-container::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8; 
         }
+        
+        /* Table Section Headers */
+        .table-section-title {
+            background-color: #f8f9fa;
+            color: var(--theme-purple);
+            font-weight: 700;
+            padding: 10px 15px;
+            border-left: 4px solid var(--theme-purple);
+            margin: 0;
+            font-size: 0.95rem;
+        }
 
     </style>
 </head>
@@ -181,12 +193,12 @@
                 <div>
                     <h4 class="mb-0 brand-text"><i class="fas fa-chart-line me-2"></i>MARKET INTELLIGENCE</h4>
                     <div class="text-secondary fw-bold mt-1" style="font-size: 0.9rem;">
-                        <i class="far fa-calendar-alt me-1"></i> Dữ liệu đóng cửa: 01/12/2025
+                        <i class="far fa-calendar-alt me-1"></i> Dữ liệu đóng cửa: 02/12/2025
                     </div>
                 </div>
                 <div class="d-flex gap-2">
                     <span class="badge bg-purple rounded-pill px-3 py-2">Daily Report</span>
-                    <span class="badge bg-dark rounded-pill px-3 py-2">VSA Analysis</span>
+                    <span class="badge bg-dark rounded-pill px-3 py-2">Technical Signals</span>
                 </div>
             </div>
         </div>
@@ -200,14 +212,14 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="text-muted mb-1 text-uppercase fw-bold" style="font-size: 0.75rem;">VN-INDEX</p>
-                            <div class="stat-value">1,701.67</div>
+                            <div class="stat-value">1,717.06</div>
                             <div class="mt-2 text-success fw-bold small">
-                                <i class="fas fa-arrow-up"></i> +10.68 điểm
+                                <i class="fas fa-arrow-up"></i> +15.39 điểm
                             </div>
                         </div>
                         <div class="text-end">
-                            <div class="badge badge-up-light p-2 mb-2"><i class="fas fa-chart-line"></i> Xu Hướng Tăng</div>
-                            <div style="font-size: 0.8rem;">Đóng cửa: <span class="text-neutral fw-bold">Nửa dưới</span></div>
+                            <div class="badge badge-up-light p-2 mb-2"><i class="fas fa-rocket"></i> BREAKOUT</div>
+                            <div style="font-size: 0.8rem;">Trạng thái: <span class="text-success fw-bold">Tích cực</span></div>
                         </div>
                     </div>
                 </div>
@@ -218,9 +230,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="text-muted mb-1 text-uppercase fw-bold" style="font-size: 0.75rem;">RSI (14)</p>
-                            <div class="stat-value text-purple">60.97</div>
+                            <div class="stat-value text-purple">64.1</div>
                             <div class="mt-2 text-muted small">
-                                Bullish Zone (Tích cực)
+                                Hướng vùng Quá mua
                             </div>
                         </div>
                         <div class="text-end">
@@ -231,18 +243,18 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card metric-card neutral p-3">
+                <div class="card metric-card bullish p-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="text-muted mb-1 text-uppercase fw-bold" style="font-size: 0.75rem;">THANH KHOẢN</p>
-                            <div class="stat-value text-secondary">519.8 M</div>
-                            <div class="mt-2 text-danger small fw-bold">
-                                <i class="fas fa-arrow-down"></i> Thấp hơn TB 20 phiên
+                            <div class="stat-value text-secondary">654 M</div>
+                            <div class="mt-2 text-success small fw-bold">
+                                <i class="fas fa-arrow-up"></i> 101% so với TB 20
                             </div>
                         </div>
                         <div class="text-end">
-                            <div class="badge bg-warning text-dark p-2 mb-2">Weak Effort</div>
-                            <div style="font-size: 0.8rem;">TB20: 671.4 M</div>
+                            <div class="badge bg-success text-white p-2 mb-2">Dòng tiền tốt</div>
+                            <div style="font-size: 0.8rem;">Lan tỏa đều</div>
                         </div>
                     </div>
                 </div>
@@ -254,119 +266,153 @@
                 
                 <div class="card mb-4">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0 fw-bold text-purple"><i class="fas fa-layer-group me-2"></i>PHÂN TÍCH NHÓM NGÀNH DẪN DẮT</h6>
-                        <span class="badge bg-light text-dark border">Cập nhật: 01/12</span>
+                        <h6 class="mb-0 fw-bold text-purple"><i class="fas fa-layer-group me-2"></i>TÂM ĐIỂM: BOM TẤN SAB & VJC</h6>
+                        <span class="badge bg-light text-dark border">Cập nhật: 02/12</span>
                     </div>
                     <div class="card-body">
                         <div class="industry-analysis-content">
                             <div class="industry-item">
-                                <h6 class="fw-bold text-success"><i class="fas fa-utensils me-2"></i>Dịch vụ tiêu dùng (+1.55%)</h6>
+                                <h6 class="fw-bold text-success"><i class="fas fa-plane me-2"></i>Hàng không & Tiêu dùng (VJC, SAB)</h6>
                                 <p class="mb-1 small">
-                                    Chỉ số RSI đạt <b>74.6</b> (vùng Quá mua), cho thấy sức mạnh dòng tiền đang tập trung rất mạnh tại đây. 
-                                    Các mã đầu ngành tiếp tục phá đỉnh.
+                                    Dòng tiền "Smart Money" nhập cuộc quyết liệt. <b>SAB</b> có tín hiệu "Buying Climax" (Vol gấp 5.1 lần). 
+                                    <b>VJC</b> đóng vai trò dẫn dắt tâm lý thị trường chung.
                                 </p>
-                                <span class="badge bg-success bg-opacity-10 text-success border border-success">Trạng thái: Tăng mạnh / Nắm giữ</span>
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success">Trạng thái: Bứt phá / Buying Climax</span>
                             </div>
 
                             <div class="industry-item">
-                                <h6 class="fw-bold text-primary"><i class="fas fa-shopping-cart me-2"></i>Hàng tiêu dùng (+1.05%)</h6>
+                                <h6 class="fw-bold text-primary"><i class="fas fa-university me-2"></i>Ngân hàng (TCB)</h6>
                                 <p class="mb-1 small">
-                                    Duy trì đà tăng trưởng bền vững bất chấp thị trường rung lắc. Đây đang là "hầm trú ẩn" an toàn cho dòng tiền lớn.
+                                    Đóng vai trò giữ nhịp chỉ số bền vững. TCB tăng tốt (+3.01%) đi kèm thanh khoản cao (1.4 lần trung bình).
                                 </p>
-                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">Trạng thái: Tích cực / An toàn</span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">Trạng thái: Tích lũy / Tăng bền</span>
                             </div>
 
                             <div class="industry-item">
                                 <h6 class="fw-bold text-secondary"><i class="fas fa-info-circle me-2"></i>Nhận định chung</h6>
                                 <p class="mb-0 small fst-italic text-muted">
-                                    Dòng tiền đang có xu hướng dịch chuyển sang các nhóm ngành mang tính phòng thủ và tiêu dùng thiết yếu. 
-                                    Nhà đầu tư nên ưu tiên nắm giữ cổ phiếu thuộc các nhóm này thay vì mua đuổi các nhóm đã tăng nóng.
+                                    Thị trường có phiên "Breakout" nhẹ về điểm số. Dòng tiền thông minh đang luân chuyển mạnh vào nhóm vốn hóa lớn (Blue-chips) thay vì lan man.
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="card">
                     <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
-                            <i class="fas fa-filter text-purple me-2"></i>
-                            <h6 class="mb-0 fw-bold text-dark">Bộ Lọc Tín Hiệu Cuối Phiên (Watchlist)</h6>
+                            <i class="fas fa-tasks text-purple me-2"></i>
+                            <h6 class="mb-0 fw-bold text-dark">Tín Hiệu Kỹ Thuật Nổi Bật (02/12)</h6>
                         </div>
-                        <span class="badge bg-secondary">01/12/2025</span>
+                        <span class="badge bg-danger">HOT</span>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive table-container">
+                            
+                            <div class="table-section-title">
+                                A. Top Cổ Phiếu Sức Khỏe Mạnh Nhất (Scoring System)
+                            </div>
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="ps-3">Ticker</th>
-                                        <th>Tín Hiệu VSA</th>
-                                        <th>Hành Động (Action)</th>
-                                        <th class="text-end">Giá</th>
-                                        <th class="text-end">% Tăng/Giảm</th>
-                                        <th class="text-end">% Vol/TB20</th>
+                                        <th class="ps-3" style="width: 10%">Ticker</th>
+                                        <th class="text-center" style="width: 15%">Điểm (0-10)</th>
+                                        <th style="width: 20%">Trạng Thái</th>
+                                        <th style="width: 25%">Hành Động</th>
+                                        <th style="width: 30%">Ghi Chú</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="fw-bold text-purple">VNM</td>
-                                        <td><span class="badge bg-up">MUA NGAY</span></td>
-                                        <td class="text-success fw-bold">MUA MANH / GIA TANG</td>
-                                        <td class="text-end">64.0</td>
-                                        <td class="text-end text-up fw-bold">+3.23%</td>
-                                        <td class="text-end">227.93%</td>
+                                        <td class="fw-bold text-purple ps-3">PC1</td>
+                                        <td class="text-center"><span class="badge rounded-pill bg-primary">10/10</span></td>
+                                        <td><span class="badge bg-success">KHỎE (STRONG)</span></td>
+                                        <td class="text-success fw-bold">NẮM GIỮ / GIA TĂNG</td>
+                                        <td class="small text-muted">Trend tăng mạnh + Tiền vào tốt. Đây là "Hoa" nên giữ để lãi chạy.</td>
                                     </tr>
                                     <tr>
-                                        <td class="fw-bold text-purple">GAS</td>
-                                        <td><span class="badge bg-up">MUA NGAY</span></td>
-                                        <td class="text-success fw-bold">MUA THAM DO 30%</td>
-                                        <td class="text-end">63.4</td>
-                                        <td class="text-end text-up fw-bold">+0.63%</td>
-                                        <td class="text-end">155.00%</td>
+                                        <td class="fw-bold text-purple ps-3">POW</td>
+                                        <td class="text-center"><span class="badge rounded-pill bg-primary">10/10</span></td>
+                                        <td><span class="badge bg-success">KHỎE (STRONG)</span></td>
+                                        <td class="text-success fw-bold">NẮM GIỮ / GIA TĂNG</td>
+                                        <td class="small text-muted">Dòng tiền kích hoạt mạnh. Canh rung lắc để gia tăng vị thế.</td>
                                     </tr>
                                     <tr>
-                                        <td class="fw-bold text-purple">MSB</td>
-                                        <td><span class="badge bg-up">MUA NGAY</span></td>
-                                        <td class="text-success fw-bold">MUA THAM DO 30%</td>
-                                        <td class="text-end">13.15</td>
-                                        <td class="text-end text-up fw-bold">+0.77%</td>
-                                        <td class="text-end">349.28%</td>
+                                        <td class="fw-bold text-purple ps-3">PVT</td>
+                                        <td class="text-center"><span class="badge rounded-pill bg-primary">10/10</span></td>
+                                        <td><span class="badge bg-success">KHỎE (STRONG)</span></td>
+                                        <td class="text-success fw-bold">NẮM GIỮ / GIA TĂNG</td>
+                                        <td class="small text-muted">Xu hướng tăng bền vững. Hạn chế bán sớm khi chưa gãy trend.</td>
                                     </tr>
                                     <tr>
-                                        <td class="fw-bold text-purple">PVT</td>
-                                        <td><span class="badge bg-up">MUA NGAY</span></td>
-                                        <td class="text-success fw-bold">MUA THAM DO 30%</td>
-                                        <td class="text-end">18.85</td>
-                                        <td class="text-end text-up fw-bold">+1.34%</td>
-                                        <td class="text-end">228.49%</td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td class="fw-bold text-purple">BMP</td>
-                                        <td><span class="badge badge-neutral-light border border-warning text-dark">THEO DOI</span></td>
-                                        <td class="text-success fw-bold">MUA SOM (TEST CUNG)</td>
-                                        <td class="text-end">157.9</td>
-                                        <td class="text-end text-up fw-bold">+1.09%</td>
-                                        <td class="text-end">45.34%</td>
+                                        <td class="fw-bold text-purple ps-3">VNM</td>
+                                        <td class="text-center"><span class="badge rounded-pill bg-primary">10/10</span></td>
+                                        <td><span class="badge bg-success">KHỎE (STRONG)</span></td>
+                                        <td class="text-success fw-bold">NẮM GIỮ / GIA TĂNG</td>
+                                        <td class="small text-muted">Blue-chip dẫn dắt, phù hợp nắm giữ trung hạn.</td>
                                     </tr>
                                     <tr>
-                                        <td class="fw-bold text-purple">DXG</td>
-                                        <td><span class="badge badge-neutral-light border border-warning text-dark">THEO DOI</span></td>
-                                        <td class="text-success fw-bold">MUA SOM (TEST CUNG)</td>
-                                        <td class="text-end">18.8</td>
-                                        <td class="text-end text-up fw-bold">+0.27%</td>
-                                        <td class="text-end">59.05%</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold text-purple">HAH</td>
-                                        <td><span class="badge badge-neutral-light border border-warning text-dark">THEO DOI</span></td>
-                                        <td class="text-success fw-bold">MUA SOM (TEST CUNG)</td>
-                                        <td class="text-end">60.9</td>
-                                        <td class="text-end text-up fw-bold">+1.00%</td>
-                                        <td class="text-end">57.91%</td>
+                                        <td class="fw-bold text-purple ps-3">PNJ</td>
+                                        <td class="text-center"><span class="badge rounded-pill bg-primary">10/10</span></td>
+                                        <td><span class="badge bg-success">KHỎE (STRONG)</span></td>
+                                        <td class="text-success fw-bold">NẮM GIỮ / GIA TĂNG</td>
+                                        <td class="small text-muted">Đà tăng ổn định, chưa có dấu hiệu phân phối.</td>
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <div class="table-section-title mt-0 border-top">
+                                B. Tín Hiệu Mẫu Hình Nến (Candlestick Patterns)
+                            </div>
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-3" style="width: 10%">Ticker</th>
+                                        <th style="width: 25%">Mẫu Hình Nến</th>
+                                        <th style="width: 40%">Diễn Giải & Ý Nghĩa</th>
+                                        <th style="width: 25%">Hành Động Gợi Ý</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold text-purple ps-3">EIB</td>
+                                        <td><span class="badge bg-success">Bullish Engulfing</span></td>
+                                        <td class="small text-muted">Phe mua áp đảo hoàn toàn nến giảm trước đó.</td>
+                                        <td class="text-success fw-bold small">Mua thăm dò/gia tăng. SL dưới đáy nến.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-purple ps-3">GVR</td>
+                                        <td><span class="badge bg-success">Bullish Engulfing</span></td>
+                                        <td class="small text-muted">Lực cầu mạnh mẽ, xác nhận xu hướng tăng tiếp diễn.</td>
+                                        <td class="text-success fw-bold small">Tiếp tục nắm giữ hoặc mua mới khi vượt đỉnh.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-purple ps-3">PC1</td>
+                                        <td><span class="badge bg-success">Bullish Engulfing</span></td>
+                                        <td class="small text-muted">Đồng pha với điểm số 10/10, xác nhận sức mạnh tuyệt đối.</td>
+                                        <td class="text-success fw-bold small">Tự tin nắm giữ, canh mua thêm.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-purple ps-3">NAB</td>
+                                        <td><span class="badge bg-info text-dark">Hammer (Nến Búa)</span></td>
+                                        <td class="small text-muted">Xuất hiện lực cầu bắt đáy, từ chối giảm giá sâu hơn.</td>
+                                        <td class="text-primary fw-bold small">Canh mua hồi phục khi giá vượt râu nến trên.</td>
+                                    </tr>
+                                    <tr class="table-danger bg-opacity-10">
+                                        <td class="fw-bold text-danger ps-3">ANV</td>
+                                        <td><span class="badge bg-danger">Evening Star (Sao Hôm)</span></td>
+                                        <td class="small text-danger">Tín hiệu đảo chiều GIẢM tại đỉnh ngắn hạn.</td>
+                                        <td class="text-danger fw-bold small">Cẩn trọng! Chốt lời một phần, rủi ro cao.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-dark ps-3">DXG</td>
+                                        <td><span class="badge bg-warning text-dark">Doji (Lưỡng lự)</span></td>
+                                        <td class="small text-muted">Cung cầu cân bằng, tâm lý nhà đầu tư đang do dự.</td>
+                                        <td class="text-warning fw-bold small">Quan sát. Gãy nền -> Bán. Bứt phá -> Mua.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
                         </div>
                     </div>
                 </div>
@@ -376,55 +422,55 @@
                 
                 <div class="card mb-4">
                     <div class="card-header bg-white py-3 border-bottom-0">
-                         <h6 class="mb-0 fw-bold text-purple"><i class="fas fa-microscope me-2"></i>GÓC NHÌN KỸ THUẬT (01/12)</h6>
+                         <h6 class="mb-0 fw-bold text-purple"><i class="fas fa-microscope me-2"></i>GÓC NHÌN KỸ THUẬT (02/12)</h6>
                     </div>
                     <div class="card-body pt-0">
                         <div class="mb-3">
                             <span class="analysis-label">1. VSA & Price Action</span>
                             <p class="analysis-text mb-2">
-                                VN-INDEX đóng cửa <b>1,701.67</b> (+10.68 điểm). Tuy nhiên nến có bóng trên dài (Long Upper Shadow) thể hiện áp lực cung quyết liệt tại 1,713. Khối lượng chỉ <b>519.8 M</b> (thấp hơn TB20), đây là tín hiệu <span class="badge bg-warning text-dark">Nỗ lực yếu</span>.
+                                VN-INDEX đóng cửa <b>1,717.06</b> (cao nhất ngắn hạn). Phe mua kiểm soát hoàn toàn thế trận. Khối lượng <b>654 M</b> cho thấy sự đồng thuận, không có dấu hiệu "kéo rướn".
                             </p>
                         </div>
                         
                         <div class="mb-3">
-                            <span class="analysis-label">2. Bối Cảnh Chung</span>
+                            <span class="analysis-label">2. Chỉ báo kỹ thuật</span>
                             <div class="bg-light p-2 rounded border">
                                 <div class="d-flex justify-content-between mb-1">
                                     <span class="small">Xu hướng:</span>
-                                    <span class="small fw-bold text-success">Tăng (Đáy sau cao hơn)</span>
+                                    <span class="small fw-bold text-success">UPTREND (Tích cực)</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-1">
                                     <span class="small">RSI (14) / MACD:</span>
-                                    <span class="small fw-bold text-success">60.97 / Histogram Dương</span>
+                                    <span class="small fw-bold text-success">64.1 / Histogram mở rộng</span>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <span class="small">Hỗ trợ / Kháng cự:</span>
-                                    <span class="small fw-bold">1,690 / 1,715</span>
+                                    <span class="small">Kháng cự tâm lý:</span>
+                                    <span class="small fw-bold">Đã vượt 1,700</span>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <span class="analysis-label">3. Kịch Bản Hành Động</span>
+                            <span class="analysis-label">3. Xác suất thị trường</span>
                             
                             <div class="mb-2">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="badge bg-success small">Tích Cực (40%)</span>
+                                    <span class="badge bg-success small">Tăng Tiếp Diễn (80%)</span>
                                 </div>
                                 <div class="progress" style="height: 6px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 40%"></div>
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 80%"></div>
                                 </div>
-                                <p class="small text-muted mt-1 mb-2">Bùng nổ vượt 1,715 với Vol > 650M. Phủ định nến rút chân hôm nay.</p>
+                                <p class="small text-muted mt-1 mb-2">Hướng tới kháng cự cao hơn nhờ trụ cột Bank/Hàng không.</p>
                             </div>
 
                             <div>
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="badge bg-secondary small">Thận Trọng/Tiêu Cực (60%)</span>
+                                    <span class="badge bg-secondary small">Rung lắc/Chỉnh (20%)</span>
                                 </div>
                                 <div class="progress" style="height: 6px;">
-                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 60%"></div>
+                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 20%"></div>
                                 </div>
-                                <p class="small text-muted mt-1 mb-0">Điều chỉnh kiểm định lại <b>1,690</b>. Nếu thủng với Vol lớn, xu hướng chuyển xấu.</p>
+                                <p class="small text-muted mt-1 mb-0">Re-test nhẹ vùng 1,700-1,710 để hấp thụ cung.</p>
                             </div>
                         </div>
                     </div>
@@ -432,29 +478,29 @@
 
                 <div class="card recommendation-card">
                     <div class="card-body">
-                        <h5 class="card-title fw-bold"><i class="fas fa-lightbulb me-2"></i>KHUYẾN NGHỊ & NGÀNH</h5>
-                        <p class="small text-white-50 mb-3">Chiến lược: Phòng thủ & Tiêu dùng</p>
+                        <h5 class="card-title fw-bold"><i class="fas fa-lightbulb me-2"></i>HÀNH ĐỘNG (ACTION)</h5>
+                        <p class="small text-white-50 mb-3">Xu hướng: TÍCH CỰC (UPTREND)</p>
                         <hr>
                         
                         <div class="mb-4">
                             <div class="d-flex align-items-center mb-1">
-                                <span class="badge bg-white text-success fw-bold me-2">DẪN DẮT (LEADING)</span>
+                                <span class="badge bg-white text-success fw-bold me-2">CHIẾN LƯỢC</span>
                             </div>
                             <p class="small mb-0 text-white-50">
-                                <strong>Dịch vụ tiêu dùng (+1.55%):</strong> RSI 74.6 (Quá mua). Sức mạnh dòng tiền rất mạnh. Tiếp tục nắm giữ.
+                                <strong>NẮM GIỮ (HOLD):</strong> Tiếp tục giữ vị thế trung/dài hạn, đặc biệt nhóm Ngân hàng và Bán lẻ.
                                 <br>
-                                <strong>Hàng tiêu dùng (+1.05%):</strong> Tăng trưởng bền vững. Hầm trú ẩn an toàn.
+                                <strong>MUA MỚI (BUY):</strong> Canh nhịp Pullback trong phiên để gia tăng tỷ trọng mã dẫn đầu.
                             </p>
                         </div>
 
                         <div class="mb-4">
                             <div class="d-flex align-items-center mb-1">
-                                <span class="badge bg-white text-warning fw-bold me-2">HÀNH ĐỘNG</span>
+                                <span class="badge bg-white text-warning fw-bold me-2">QUẢN TRỊ RỦI RO</span>
                             </div>
                             <p class="small mb-0 text-white-50">
-                                - <strong>Không mua đuổi</strong> tại vùng giá xanh. <br>
-                                - Canh chốt lời từng phần các mã đã đạt mục tiêu.<br>
-                                - Ưu tiên dịch chuyển danh mục sang Bán lẻ, Thực phẩm, Điện nước.
+                                - Với mã nóng như <b>SAB (RSI>80)</b>: Hạn chế mua đuổi giá trần, chờ nhịp Re-test.<br>
+                                - Nâng mức chặn lãi (Trailing Stop) để bảo toàn lợi nhuận.<br>
+                                - Chỉ bán khi xuất hiện phiên phân phối lớn.
                             </p>
                         </div>
                     </div>
